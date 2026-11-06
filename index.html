@@ -1,0 +1,1321 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Euro Dragon</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Euro Dragon clears low-value e-commerce consignments into the European Union, by air, road and sea.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Archivo+Black&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: fixed full-bleed WebGL stage behind a scrolling story; glass cards pin per chapter and alternate sides so the vehicle always has the open half of the screen. */
+:root{
+  --ink:#070a1f;          /* night navy, page ground */
+  --ink-2:#0e1234;        /* raised surfaces */
+  --navy:#363d7e;         /* brand navy (logo wordmark) */
+  --star:#fcc917;         /* brand yellow (logo star) */
+  --mist:#eceef8;         /* primary text */
+  --steel:#9ba0c8;        /* secondary text */
+  --line:rgba(236,238,248,.12);
+  --glass:rgba(9,12,38,.58);
+  --display:"Archivo","Arial Black",system-ui,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --gx:max(20px,env(safe-area-inset-left,0px));
+  --gr:max(20px,env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--ink)}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:var(--ink);color:var(--mist);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--star);color:var(--ink)}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--star);outline-offset:3px;border-radius:4px}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+.no-gl #gl{display:none}
+.no-gl body{background:radial-gradient(120% 80% at 75% 30%,#1b2160 0%,var(--ink) 60%)}
+.shade{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,10,31,.55) 0%,rgba(7,10,31,0) 45%)}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--ink);transition:opacity .9s ease,visibility .9s}
+#loader.done{opacity:0;visibility:hidden}
+.ld{display:grid;gap:22px;justify-items:center;width:min(260px,70vw)}
+.ld img{width:150px;height:auto}
+.ld-bar{width:100%;height:2px;background:var(--line);overflow:hidden;border-radius:2px}
+.ld-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,transparent,var(--star) 40%,#fff);box-shadow:0 0 12px var(--star);transition:width .3s ease}
+.ld-n{font:500 11px/1 var(--mono);letter-spacing:.18em;color:var(--steel)}
+
+/* ---------- header ---------- */
+.top{position:fixed;inset:0 0 auto;z-index:20;display:flex;align-items:center;gap:28px;padding-top:calc(env(safe-area-inset-top,0px) + 18px);padding-bottom:18px;padding-left:var(--gx);padding-right:var(--gr);background:linear-gradient(180deg,rgba(7,10,31,.8),rgba(7,10,31,0))}
+.brand{display:block;line-height:0;flex:none}
+.brand img{height:38px;width:auto}
+.nav{display:flex;gap:26px;margin-left:auto;font-size:14px;font-weight:500}
+.nav a{text-decoration:none;color:var(--steel);transition:color .2s}
+.nav a:hover{color:var(--mist)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;font:500 11px/1 var(--mono);letter-spacing:.08em}
+.lang button{background:none;border:0;padding:6px 9px;border-radius:999px;color:var(--steel);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--mist);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:13px 22px;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s}
+.btn-y{background:var(--star);color:#14163a;box-shadow:0 0 0 0 rgba(252,201,23,.5)}
+.btn-y:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(252,201,23,.6)}
+.btn-g{background:rgba(236,238,248,.06);color:var(--mist);border:1px solid var(--line)}
+.btn-g:hover{background:rgba(236,238,248,.12)}
+.btn svg{width:16px;height:16px}
+.top .btn{padding:10px 18px;font-size:14px}
+
+/* ---------- rail ---------- */
+.rail{position:fixed;right:var(--gr);top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:6px;opacity:0;transition:opacity .5s}
+.rail.on{opacity:1}
+.rail button{position:relative;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;border:1px solid transparent;background:none;color:var(--steel);cursor:pointer;transition:color .3s,border-color .3s,background .3s}
+.rail button svg{width:20px;height:20px}
+.rail button::after{content:"";position:absolute;left:50%;bottom:-4px;width:2px;height:0;background:var(--star);transform:translateX(-50%)}
+.rail button.done{color:var(--star)}
+.rail button.now{color:var(--ink);background:var(--star);box-shadow:0 0 24px -4px rgba(252,201,23,.7)}
+.rail .tip{position:absolute;right:52px;white-space:nowrap;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mist);opacity:0;transform:translateX(6px);transition:.25s;pointer-events:none}
+.rail button:hover .tip{opacity:1;transform:none}
+.rail .track{position:absolute;right:20px;top:42px;bottom:42px;width:2px;background:var(--line);z-index:-1}
+.rail .track i{display:block;width:100%;height:0;background:var(--star)}
+
+/* ---------- cursor ---------- */
+.cur,.cur-r{position:fixed;left:0;top:0;z-index:60;pointer-events:none;border-radius:50%;transform:translate3d(-100px,-100px,0)}
+.cur{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--star)}
+.cur-r{width:36px;height:36px;margin:-18px 0 0 -18px;border:1px solid rgba(252,201,23,.55);transition:width .25s,height .25s,margin .25s,background .25s}
+.cur-r.big{width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(252,201,23,.08)}
+@media (pointer:coarse){.cur,.cur-r{display:none}}
+
+/* ---------- type ---------- */
+.eyebrow{font:500 12px/1.2 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--star);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:26px;height:2px;background:linear-gradient(90deg,transparent,var(--star));border-radius:2px}
+h1,h2,h3{font-family:var(--display);font-stretch:118%;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-weight:850;font-size:clamp(2.6rem,6.4vw,6.2rem);line-height:.92;text-transform:uppercase}
+h2{font-weight:800;font-size:clamp(1.9rem,3.3vw,3.1rem);line-height:1}
+h3{font-weight:750;font-size:1.25rem;line-height:1.15}
+p{margin:0}
+.lede{font-size:clamp(1.02rem,1.25vw,1.18rem);color:#cfd2ea;max-width:52ch}
+.hl{color:var(--star)}
+
+/* ---------- hero ---------- */
+main{position:relative;z-index:2}
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;padding-top:120px;padding-bottom:max(56px,8vh);padding-left:var(--gx);padding-right:var(--gr)}
+.hero-in{display:grid;gap:26px;max-width:780px}
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.04em}
+.hero h1 .ln>span{display:block}
+.ready .hero h1 .ln>span{transform:none}
+.ready .hero h1 .ln:nth-child(2)>span{transition-delay:.08s}
+.ready .hero h1 .ln:nth-child(3)>span{transition-delay:.16s}
+.hero .fade{opacity:0;transition:opacity .8s .2s}
+.ready .hero .fade{opacity:1;transform:none}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px 18px;font:400 12px/1.4 var(--mono);color:var(--steel);letter-spacing:.04em}
+.chips span{display:flex;align-items:center;gap:8px}
+.chips span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--star);box-shadow:0 0 10px var(--star)}
+.scrollcue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:2px;height:54px;background:var(--line);overflow:hidden;border-radius:2px}
+.scrollcue::after{content:"";position:absolute;left:0;top:-40%;width:100%;height:40%;background:linear-gradient(transparent,var(--star));animation:cue 2s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes cue{to{top:110%}}
+.streak{position:fixed;z-index:30;left:0;top:34%;width:56vw;height:3px;pointer-events:none;transform:translateX(-70vw) rotate(-14deg);opacity:0}
+.streak::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(252,201,23,.0) 10%,var(--star) 85%,#fff);border-radius:3px;filter:drop-shadow(0 0 8px var(--star))}
+.streak img{position:absolute;right:-26px;top:50%;width:46px;height:auto;transform:translateY(-50%) rotate(14deg);filter:drop-shadow(0 0 14px rgba(252,201,23,.8))}
+.ready .streak{animation:streak 1.5s .1s cubic-bezier(.55,.05,.25,1) forwards}
+@keyframes streak{0%{opacity:1;transform:translate(-70vw,8vh) rotate(-14deg)}75%{opacity:1}100%{opacity:0;transform:translate(130vw,-22vh) rotate(-14deg)}}
+
+/* ---------- chapters ---------- */
+.chapter{position:relative;height:220vh}
+.pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center;padding-left:var(--gx);padding-right:calc(var(--gr) + 64px)}
+.chapter.right .pin{justify-content:flex-end}
+.card{width:min(580px,100%);display:grid;gap:16px;padding:36px;border-radius:20px;background:rgba(7,10,31,.86);border:1px solid var(--line);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
+.card ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:15px;color:#d6d9ee}
+.card li{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:baseline}
+.card li::before{content:"";width:10px;height:2px;background:var(--star);transform:translateY(-4px)}
+.strip{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding-top:16px;border-top:1px solid var(--line);font:400 11.5px/1.5 var(--mono);color:var(--steel);letter-spacing:.02em}
+.strip b{font-weight:500;color:var(--mist)}
+.tag{font:500 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid var(--line);color:var(--steel)}
+.ok{color:#8ee6a8}
+.hint{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--star);display:flex;gap:8px;align-items:center}
+.hint::before{content:"";width:8px;height:8px;border-radius:50%;border:1px solid var(--star);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{transform:scale(1.6);opacity:.3}}
+
+
+/* platform layers */
+.layers{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.layers li{display:grid;grid-template-columns:30px 1fr;gap:2px 8px;padding:7px 10px;border-radius:12px;border:1px solid transparent;transition:background .4s,border-color .4s,opacity .4s;opacity:.45}
+.layers li::before{display:none}
+.layers li.on{opacity:1;background:rgba(252,201,23,.07);border-color:rgba(252,201,23,.25)}
+.layers .n{font:500 11px/1.9 var(--mono);color:var(--star);grid-row:1/span 2;grid-column:1}
+.layers b{font-weight:600;font-size:15px;color:var(--mist);grid-column:2}
+.layers span:not(.n){font-size:13px;line-height:1.4;color:var(--steel);grid-column:2}
+@media (max-height:860px){#platform .lede{display:none}}
+.ticker{display:flex;flex-direction:column;gap:4px;font:400 11px/1.5 var(--mono);color:var(--steel);height:72px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.ticker div{display:flex;justify-content:space-between;gap:12px;animation:tick .5s ease}
+@keyframes tick{from{opacity:0;transform:translateY(8px)}}
+
+/* tooltip */
+.tip3d{position:fixed;z-index:25;left:0;top:0;pointer-events:none;padding:12px 14px;border-radius:12px;background:rgba(9,12,38,.85);border:1px solid rgba(252,201,23,.4);backdrop-filter:blur(10px);font:400 11.5px/1.6 var(--mono);color:var(--mist);opacity:0;transform:translate(-50%,-120%) scale(.96);transition:opacity .2s,transform .2s;white-space:nowrap}
+.tip3d.on{opacity:1;transform:translate(-50%,-130%)}
+.tip3d b{color:var(--star);font-weight:500}
+
+/* ---------- solid sections ---------- */
+.solid{position:relative;padding-left:var(--gx);padding-right:var(--gr)}
+.solid::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(7,10,31,0) 0%,rgba(7,10,31,.78) 16%,rgba(7,10,31,.78) 84%,rgba(7,10,31,0) 100%)}
+.wrap{max-width:1180px;margin:0 auto}
+.why{padding-block:22vh 14vh}
+.why .head{display:grid;gap:16px;margin-bottom:48px;max-width:640px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;perspective:900px}
+.vcard{position:relative;display:grid;gap:14px;align-content:start;padding:26px 22px 28px;border-radius:18px;background:linear-gradient(160deg,rgba(54,61,126,.32),rgba(14,18,52,.55));border:1px solid var(--line);transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s;min-width:0}
+.vcard::after{content:"";position:absolute;left:22px;right:22px;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--star),transparent);transform:scaleX(0);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.vcard:hover{border-color:rgba(252,201,23,.35)}
+.vcard:hover::after{transform:scaleX(1)}
+.vcard .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(252,201,23,.1);color:var(--star)}
+.vcard .ic svg{width:22px;height:22px}
+.vcard p{color:var(--steel);font-size:15px}
+
+.process{position:relative;padding-block:14vh}
+.process .pin{position:static;height:auto;flex-direction:column;align-items:stretch;gap:40px;padding-left:0;padding-right:0;max-width:1180px;margin:0 auto}
+.process .head{display:grid;gap:14px;max-width:640px}
+.ptrack{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;padding-top:28px}
+.pline{position:absolute;left:0;top:0;height:2px;width:100%;background:var(--line)}
+.pline i{position:absolute;left:0;top:0;height:100%;width:100%;background:linear-gradient(90deg,var(--star),rgba(252,201,23,.25))}
+.pstep{position:relative;min-width:0;display:grid;gap:12px;align-content:start;padding:24px;border-radius:18px;background:rgba(9,12,38,.6);border:1px solid var(--line);backdrop-filter:blur(10px);transition:border-color .4s}
+.pstep::before{content:"";position:absolute;left:24px;top:-35px;width:12px;height:12px;border-radius:50%;background:var(--star);border:2px solid var(--star)}
+.pstep.on{border-color:rgba(252,201,23,.3)}
+.pstep.on::before{background:var(--star);border-color:var(--star);box-shadow:0 0 14px var(--star)}
+.pstep .k{font:500 12px/1 var(--mono);color:var(--star);letter-spacing:.1em}
+.pstep p{color:var(--steel);font-size:15px}
+
+.contact{padding-block:20vh 0}
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:start}
+.cgrid .l{display:grid;gap:22px;align-content:start}
+.cgrid h2{font-size:clamp(2.2rem,4.4vw,4.2rem);text-transform:uppercase;font-weight:850}
+.dl{display:grid;gap:12px;margin-top:10px;font-size:15px}
+.dl div{display:grid;grid-template-columns:110px 1fr;gap:10px;padding-top:12px;border-top:1px solid var(--line)}
+.dl dt{font:500 11px/1.9 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.dl dd{margin:0;color:var(--steel)}
+.dl dd em{font-style:normal;font-family:var(--mono);font-size:13px;color:#7c81ad}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:28px;border-radius:20px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(16px)}
+.f{display:grid;gap:6px;min-width:0}
+.f.w{grid-column:1/-1}
+.f label{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.f input,.f select,.f textarea{width:100%;background:rgba(7,10,31,.6);border:1px solid var(--line);border-radius:10px;padding:12px 13px;font-size:15px;transition:border-color .2s,box-shadow .2s}
+.f textarea{min-height:110px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--star);box-shadow:0 0 0 3px rgba(252,201,23,.15)}
+form .btn{justify-self:start}
+.sent{grid-column:1/-1;font-size:15px;color:#8ee6a8}
+footer{position:relative;z-index:2;margin-top:18vh;padding-top:28px;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));padding-left:var(--gx);padding-right:var(--gr);border-top:1px solid var(--line);background:rgba(7,10,31,.92)}
+.fin{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:flex-start;justify-content:space-between;font-size:13px;color:var(--steel)}
+.fin img{height:30px;width:auto}
+.credits{max-width:640px;font-size:12px;line-height:1.6;color:#7c81ad}
+.credits a{color:#a6abd3}
+
+/* ---------- content blocks ---------- */
+.card h4{margin:4px 0 0;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--steel)}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-top:16px;border-top:1px solid var(--line)}
+.sg div{display:grid;gap:6px;align-content:start;font-size:14px;line-height:1.5;color:#cfd2ea;min-width:0}
+.sg b{font:500 10.5px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--star)}
+.intro{padding-block:16vh 12vh}
+.igrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:64px;align-items:start}
+.igrid .l{display:grid;gap:20px}
+.igrid p{color:#cfd2ea;font-size:1.06rem;max-width:62ch}
+.facts{display:grid;margin:0}
+.facts div{display:grid;grid-template-columns:140px 1fr;gap:12px;padding:16px 0;border-top:1px solid var(--line)}
+.facts div:last-child{border-bottom:1px solid var(--line)}
+.facts dt{font:500 11px/1.8 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.facts dd{margin:0;font-weight:600}
+.faq{padding-block:14vh}
+.faq .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:64px;align-items:start}
+.faq .l{display:grid;gap:16px}
+.faq .l p{color:var(--steel)}
+.qa{border-top:1px solid var(--line)}
+.qa details{border-bottom:1px solid var(--line)}
+.qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:20px 0;font-weight:600;font-size:1.08rem}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";font:400 22px/1 var(--mono);color:var(--star);flex:none}
+.qa details[open] summary::after{content:"\2013"}
+.qa details p{padding:0 0 22px;color:#cfd2ea;max-width:68ch}
+
+/* ---------- responsive ---------- */
+@media (max-width:1020px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{display:none}.ptrack{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:44px}.pline{display:none}}
+@media (max-width:820px){
+  .top{gap:12px}.top .btn{display:none}.brand img{height:30px}.lang{margin-left:auto}
+  .rail{display:none}
+  .shade{background:linear-gradient(0deg,rgba(7,10,31,.75) 0%,rgba(7,10,31,0) 55%)}
+  .chapter{height:auto}
+  .chapter .pin{position:relative;height:auto;padding-top:62vh;padding-bottom:6vh}
+  .card{max-height:none!important;overflow:visible!important}
+  .igrid,.faq .wrap{grid-template-columns:minmax(0,1fr);gap:32px}.sg{grid-template-columns:minmax(0,1fr)}.facts div{grid-template-columns:110px 1fr}
+  .pin{align-items:flex-end;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));padding-right:var(--gr)}
+  .chapter.right .pin{justify-content:flex-start}
+  .card{padding:20px;gap:12px;max-height:58vh;overflow:auto}
+  .card .lede{font-size:15px}.card ul{font-size:14px}
+  .process{height:auto}.process .pin{position:relative;height:auto;padding-block:14vh}
+  .ptrack{grid-template-columns:minmax(0,1fr);padding-top:0;padding-left:26px}
+  .pline{width:2px!important;height:100%;left:4px}
+  .pline i{width:100%!important;height:100%}
+  .pstep{flex:none}
+  .pstep::before{left:-29px;top:26px}
+  .cgrid{grid-template-columns:minmax(0,1fr);gap:36px}
+  form{grid-template-columns:minmax(0,1fr);padding:20px}
+}
+@media (max-width:520px){.cards{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){
+  .hero h1 .ln>span,.hero .fade{transform:none!important;opacity:1!important;transition:none}
+  .streak,.scrollcue::after{display:none}
+  .reveal{opacity:1!important;transform:none!important}
+}
+</style>
+
+<div id="loader" role="status" aria-live="polite">
+  <div class="ld">
+    <img src="logo-white.png" alt="Euro Dragon">
+    <div class="ld-bar"><i id="ldbar"></i></div>
+    <div class="ld-n" id="ldn">LOADING 0%</div>
+  </div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="shade" aria-hidden="true"></div>
+<div class="tip3d" id="tip3d" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="#hero" data-go="#hero" aria-label="Euro Dragon, back to top"><img src="logo-white.png" alt="Euro Dragon"></a>
+  <nav class="nav" aria-label="Main">
+    <a href="#air" data-go="#air" data-i18n="nav.services">Services</a>
+    <a href="#platform" data-go="#platform" data-i18n="nav.platform">Platform</a>
+    <a href="#process" data-go="#process" data-i18n="nav.process">Process</a>
+    <a href="#contact" data-go="#contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" id="lang-en" aria-pressed="true" data-lang="en">EN</button>
+    <button type="button" id="lang-nl" aria-pressed="false" data-lang="nl">NL</button>
+  </div>
+  <a class="btn btn-y" href="#contact" data-go="#contact" data-i18n="cta.quote">Request a quote</a>
+</header>
+
+<nav class="rail" aria-label="Journey">
+  <div class="track"><i id="railfill"></i></div>
+  <button type="button" data-go="#air" data-ch="air" aria-label="Air cargo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5 3 11l1.5-1.5 8 .5 4.5-4.5a2 2 0 0 1 3 3L15.5 13l.5 8-1.5 1.5-2.5-7.5-3 3V21l-1.5 1-1-3.5L3 17.5l1-1.5h3l3-2.5"/></svg><span class="tip" data-i18n="rail.air">Air cargo</span></button>
+  <button type="button" data-go="#road" data-ch="road" aria-label="Road freight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h12v10H2zM14 9h4l4 4v3h-8"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg><span class="tip" data-i18n="rail.road">Road freight</span></button>
+  <button type="button" data-go="#sea" data-ch="sea" aria-label="Sea freight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18l-2.5 4h-13zM6 15V9h5v6M11 11h7v4M8 9V5h2"/><path d="M2 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1"/></svg><span class="tip" data-i18n="rail.sea">Sea freight</span></button>
+  <button type="button" data-go="#platform" data-ch="platform" aria-label="Platform"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 4.5-9 4.5-9-4.5z"/><path d="m3 12 9 4.5 9-4.5M3 16.5 12 21l9-4.5"/></svg><span class="tip" data-i18n="rail.platform">Platform</span></button>
+</nav>
+
+<main>
+  <section id="hero" class="hero" data-stage="globe" data-kind="hero">
+    <div class="hero-in">
+      <p class="eyebrow fade" data-i18n="hero.eyebrow">Customs clearance for e-commerce · DECO</p>
+      <h1 data-i18n-lines="hero.h1"><span class="ln"><span>E-commerce customs,</span></span><span class="ln"><span><span class="hl">cleared</span> at the speed</span></span><span class="ln"><span>of commerce.</span></span></h1>
+      <p class="lede fade" data-i18n="hero.sub">Euro Dragon clears low-value e-commerce consignments into the European Union. Manifest in, parcels released, by air, road and sea.</p>
+      <div class="ctas fade">
+        <a class="btn btn-y" href="#contact" data-go="#contact"><span data-i18n="cta.quote">Request a quote</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="btn btn-g" href="#air" data-go="#air" data-i18n="cta.how">See how it works</a>
+      </div>
+      <div class="chips fade"><span data-i18n="chip.1">H7 low-value dataset</span><span data-i18n="chip.2">IOSS and non-IOSS</span><span data-i18n="chip.3">Pre-arrival lodging</span></div>
+    </div>
+  </section>
+
+  <section id="about" class="solid intro" data-stage="globe" data-kind="intro">
+    <div class="wrap igrid">
+      <div class="l">
+        <p class="eyebrow" data-i18n="in.eyebrow">About Euro Dragon</p>
+        <h2 data-i18n="in.h">Customs clearance built for e-commerce volume</h2>
+        <p data-i18n="in.p1">E-commerce shipments are different from traditional freight. One consignment can hold thousands of low-value parcels, each with its own sender, receiver and value. Euro Dragon is a customs agency that specialises in exactly that: declaring low-value e-commerce goods into the EU, parcel by parcel, at scale.</p>
+        <p data-i18n="in.p2">We work for e-commerce platforms, sellers and logistics partners shipping from outside the EU, mostly from Asia, into Europe. We file the declarations with Dutch Customs and make sure parcels are released and on their way to the customer.</p>
+      </div>
+      <dl class="facts">
+        <div><dt data-i18n="fa.1">Declaration</dt><dd data-i18n="fa.1d">H7 for low-value consignments</dd></div>
+        <div><dt data-i18n="fa.2">VAT</dt><dd data-i18n="fa.2d">IOSS and non-IOSS</dd></div>
+        <div><dt data-i18n="fa.3">Modes</dt><dd data-i18n="fa.3d">Air, road and sea</dd></div>
+        <div><dt data-i18n="fa.4">Customs</dt><dd data-i18n="fa.4d">Dutch Customs (Douane)</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="air" class="chapter left" data-stage="air" data-kind="chapter" data-ch="air">
+    <div class="pin">
+      <article class="card">
+        <p class="eyebrow" data-i18n="air.eyebrow">01 · Air cargo</p>
+        <h2 data-i18n="air.h">Cleared before the wheels touch down.</h2>
+        <p class="lede" data-i18n="air.p">Most e-commerce volume into Europe arrives by air. We take the manifest as soon as the flight is booked, validate every parcel and lodge the H7 declarations before arrival. When the aircraft lands, the consignment is ready to be released.</p>
+        <h4 data-i18n="h.handle">What we handle</h4>
+        <ul>
+          <li data-i18n="air.l1">Manifest intake per master and house air waybill</li>
+          <li data-i18n="air.l2">H7 declarations for low-value consignments</li>
+          <li data-i18n="air.l3">VAT handling for IOSS and non-IOSS</li>
+          <li data-i18n="air.l4">Pre-arrival lodging and release notifications</li>
+        </ul>
+        <div class="sg"><div><b data-i18n="h.send">You send</b><span data-i18n="air.send">A manifest with parcel-level data: sender, receiver, description, value and weight</span></div><div><b data-i18n="h.get">You get</b><span data-i18n="air.get">Declaration status and release per parcel</span></div></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="road" class="chapter right" data-stage="road" data-kind="chapter" data-ch="road">
+    <div class="pin">
+      <article class="card">
+        <p class="eyebrow" data-i18n="road.eyebrow">02 · Road freight</p>
+        <h2 data-i18n="road.h">Bonded, documented, on the move.</h2>
+        <p class="lede" data-i18n="road.p">After release, or under transit when goods clear elsewhere, parcels travel by road to sorting centres and parcel networks across the EU. We prepare the transit documents and keep the customs status attached to every parcel.</p>
+        <h4 data-i18n="h.handle">What we handle</h4>
+        <ul>
+          <li data-i18n="road.l1">Transit declarations (T1/T2)</li>
+          <li data-i18n="road.l2">Bonded transport between hubs and customs warehouses</li>
+          <li data-i18n="road.l3">Hand-off to last-mile carriers and parcel networks</li>
+          <li data-i18n="road.l4">Status per parcel until delivery</li>
+        </ul>
+        <div class="sg"><div><b data-i18n="h.send">You send</b><span data-i18n="road.send">Route, carrier and pallet details</span></div><div><b data-i18n="h.get">You get</b><span data-i18n="road.get">Transit MRN and live status</span></div></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="sea" class="chapter left" data-stage="sea" data-kind="chapter" data-ch="sea">
+    <div class="pin">
+      <article class="card">
+        <p class="eyebrow" data-i18n="sea.eyebrow">03 · Sea freight</p>
+        <h2 data-i18n="sea.h">Full containers, parcel-level control.</h2>
+        <p class="lede" data-i18n="sea.p">Sea freight suits steady, less urgent volume. We declare at manifest level, coordinate deconsolidation at the warehouse and keep each parcel traceable from the quay to the final carrier.</p>
+        <h4 data-i18n="h.handle">What we handle</h4>
+        <ul>
+          <li data-i18n="sea.l1">FCL and consolidated e-commerce containers</li>
+          <li data-i18n="sea.l2">Deconsolidation and parcel-level declarations</li>
+          <li data-i18n="sea.l3">Processing before the vessel berths</li>
+          <li data-i18n="sea.l4">Coordination with terminal and warehouse</li>
+        </ul>
+        <div class="sg"><div><b data-i18n="h.send">You send</b><span data-i18n="sea.send">Bill of lading and parcel manifest</span></div><div><b data-i18n="h.get">You get</b><span data-i18n="sea.get">Release status per parcel</span></div></div>
+        <p class="hint" data-i18n="sea.hint">Hover the highlighted container</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="platform" class="chapter right" data-stage="platform" data-kind="chapter" data-ch="platform">
+    <div class="pin">
+      <article class="card">
+        <p class="eyebrow" data-i18n="plat.eyebrow">04 · Technology</p>
+        <h2 data-i18n="plat.h">The Euro Dragon Platform.</h2>
+        <p class="lede" data-i18n="plat.p">Euro Dragon runs on its own software. Shipment data comes in through an API or EDI, is checked and classified, and is filed with Dutch Customs. You follow every parcel in the client portal.</p>
+        <ol class="layers" id="layers">
+          <li><span class="n">01</span><b data-i18n="ly.1">Data intake</b><span data-i18n="ly.1s">Manifests and shipment data via API or EDI</span></li>
+          <li><span class="n">02</span><b data-i18n="ly.2">AI processing</b><span data-i18n="ly.2s">Automatic HS classification, validation and risk checks</span></li>
+          <li><span class="n">03</span><b data-i18n="ly.3">Event streaming</b><span data-i18n="ly.3s">Real-time processing of filings and customs messages</span></li>
+          <li><span class="n">04</span><b data-i18n="ly.4">Direct Customs link</b><span data-i18n="ly.4s">Automated filing with Dutch Customs (Douane)</span></li>
+          <li><span class="n">05</span><b data-i18n="ly.5">Client portal and app</b><span data-i18n="ly.5s">Live status and tracking per shipment</span></li>
+        </ol>
+      </article>
+    </div>
+  </section>
+
+  <section id="why" class="solid why" data-stage="platform" data-kind="calm">
+    <div class="wrap">
+      <div class="head reveal">
+        <p class="eyebrow" data-i18n="why.eyebrow">Why Euro Dragon</p>
+        <h2 data-i18n="why.h">Why shippers choose Euro Dragon</h2>
+      </div>
+      <div class="cards">
+        <article class="vcard reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></svg></div><h3 data-i18n="v1.h">Speed</h3><p data-i18n="v1.p">Declarations are lodged before arrival, so parcels move on without waiting at the hub.</p></article>
+        <article class="vcard reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></div><h3 data-i18n="v2.h">Compliance</h3><p data-i18n="v2.p">Validated data and classification checks before anything is filed.</p></article>
+        <article class="vcard reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><h3 data-i18n="v3.h">Scale</h3><p data-i18n="v3.p">Built for high-volume manifests, not one declaration at a time.</p></article>
+        <article class="vcard reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><h3 data-i18n="v4.h">Transparency</h3><p data-i18n="v4.p">Live status per parcel, from manifest to release.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" class="solid process" data-stage="platform" data-kind="calm">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow" data-i18n="pr.eyebrow">Process</p>
+        <h2 data-i18n="pr.h">From manifest to doorstep</h2>
+      </div>
+      <div class="ptrack" id="ptrack">
+        <div class="pline"><i id="pfill"></i></div>
+        <article class="pstep"><span class="k">01</span><h3 data-i18n="p1.h">Shipment data received</h3><p data-i18n="p1.p">Manifest and parcel data arrive via API or EDI.</p></article>
+        <article class="pstep"><span class="k">02</span><h3 data-i18n="p2.h">Pre-arrival declaration</h3><p data-i18n="p2.p">H7 declarations are validated and lodged before arrival.</p></article>
+        <article class="pstep"><span class="k">03</span><h3 data-i18n="p3.h">Arrival and release</h3><p data-i18n="p3.p">Customs releases the consignment on arrival.</p></article>
+        <article class="pstep"><span class="k">04</span><h3 data-i18n="p4.h">Distribution</h3><p data-i18n="p4.p">Parcels move on to carriers and parcel networks.</p></article>
+        <article class="pstep"><span class="k">05</span><h3 data-i18n="p5.h">Delivered</h3><p data-i18n="p5.p">Status updates reach you and your customers.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="solid faq" data-stage="platform" data-kind="calm">
+    <div class="wrap">
+      <div class="l">
+        <p class="eyebrow" data-i18n="fq.eyebrow">FAQ</p>
+        <h2 data-i18n="fq.h">Questions shippers ask us</h2>
+        <p data-i18n="fq.p">Something not covered here? Ask us directly.</p>
+      </div>
+      <div class="qa">
+        <details open><summary data-i18n="q1">What is e-commerce customs clearance?</summary><p data-i18n="a1">Declaring goods bought online and shipped from outside the EU, usually in large consolidated shipments of individual parcels. Every parcel needs its own customs data, so the work is about handling high volumes quickly and accurately.</p></details>
+        <details><summary data-i18n="q2">What is an H7 declaration?</summary><p data-i18n="a2">H7 is the EU's reduced data set for customs declarations of low-value consignments: goods with an intrinsic value up to €150 sent to consumers in the EU. It was introduced when the €22 VAT exemption ended in July 2021.</p></details>
+        <details><summary data-i18n="q3">What changed on 1 July 2026?</summary><p data-i18n="a3">The €150 customs duty relief for low-value consignments ended. An interim flat-rate customs duty of €3 now applies to low-value e-commerce goods. These consignments are still declared with H7, so accurate parcel data matters more than ever.</p></details>
+        <details><summary data-i18n="q4">IOSS or non-IOSS: what is the difference?</summary><p data-i18n="a4">With IOSS, the seller charges EU VAT at checkout and pays it through the Import One-Stop Shop, so the parcel is released without VAT at import. Without IOSS, import VAT is paid at the border and collected from the receiver. We handle both.</p></details>
+        <details><summary data-i18n="q5">What data do you need from us?</summary><p data-i18n="a5">A manifest with parcel-level data: sender and receiver, goods description, quantity, value, weight and, where available, the HS code. We validate the data and flag problems before anything is filed.</p></details>
+        <details><summary data-i18n="q6">Which modes of transport do you cover?</summary><p data-i18n="a6">Air, road and sea. Most e-commerce volume arrives by air; sea freight suits steady, less urgent volume, and road links hubs and parcel networks across the EU.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="solid contact" data-stage="globe" data-kind="finale">
+    <div class="wrap cgrid">
+      <div class="l reveal">
+        <p class="eyebrow" data-i18n="c.eyebrow">Contact</p>
+        <h2 data-i18n="c.h">Ship to Europe. We'll handle customs.</h2>
+        <p class="lede" data-i18n="c.p">Tell us about your volumes and lanes. We'll come back with a proposal.</p>
+        <dl class="dl">
+          <div><dt data-i18n="c.addr">Address</dt><dd><em>[street, postcode, city]</em></dd></div>
+          <div><dt data-i18n="c.phone">Phone</dt><dd><em>[+31 …]</em></dd></div>
+          <div><dt data-i18n="c.mail">Email</dt><dd><em>[email address]</em></dd></div>
+        </dl>
+      </div>
+      <form id="qform" class="reveal" novalidate>
+        <div class="f"><label for="f-name" data-i18n="f.name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+        <div class="f"><label for="f-co" data-i18n="f.co">Company</label><input id="f-co" name="company" autocomplete="organization"></div>
+        <div class="f"><label for="f-mail" data-i18n="f.mail">Email</label><input id="f-mail" name="email" type="email" autocomplete="email" required></div>
+        <div class="f"><label for="f-vol" data-i18n="f.vol">Monthly parcels</label>
+          <select id="f-vol" name="volume"><option>&lt; 10,000</option><option>10,000 – 100,000</option><option selected>100,000 – 1M</option><option>&gt; 1M</option></select></div>
+        <div class="f w"><label for="f-org" data-i18n="f.org">Origin country</label><input id="f-org" name="origin" placeholder="China"></div>
+        <div class="f w"><label for="f-msg" data-i18n="f.msg">Message</label><textarea id="f-msg" name="message"></textarea></div>
+        <button class="btn btn-y" type="submit"><span data-i18n="f.send">Send request</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+        <p class="sent" id="sent" hidden data-i18n="f.ok">Thanks. We'll be in touch.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="fin">
+    <img src="logo-white.png" alt="Euro Dragon">
+    <div>© 2026 Euro Dragon · KvK <span style="font-family:var(--mono)">[number]</span></div>
+    <p class="credits">3D: “<a href="https://sketchfab.com/3d-models/airbus-a321-232-22721a53dabc4ca282fbda3b8cd7f030">Airbus A321-232</a>” by piggyrockstarYT and “<a href="https://sketchfab.com/3d-models/container-ship-aaa41cca946b4a08bc08cf692b7757be">Container Ship</a>” by RM02, both licensed under <a href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, modified (livery, parts). Earth imagery: NASA Visible Earth via three.js.</p>
+  </div>
+</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+
+<script>
+/* ---------------- i18n ---------------- */
+window.I18N={
+en:{"nav.services":"Services","nav.platform":"Platform","nav.process":"Process","nav.contact":"Contact","cta.quote":"Request a quote","cta.how":"See how it works",
+"rail.air":"Air cargo","rail.road":"Road freight","rail.sea":"Sea freight","rail.platform":"Platform",
+"hero.eyebrow":"Customs clearance for e-commerce · DECO","hero.h1":["E-commerce customs,","<span class=\"hl\">cleared</span> at the speed","of commerce."],
+"hero.sub":"Euro Dragon clears low-value e-commerce consignments into the European Union. Manifest in, parcels released, by air, road and sea.",
+"chip.1":"H7 low-value dataset","chip.2":"IOSS and non-IOSS","chip.3":"Pre-arrival lodging","tag.example":"Example","tag.live":"Example feed","u.parcels":"parcels","u.pallets":"pallets",
+"air.eyebrow":"01 · Air cargo","air.h":"Cleared before the wheels touch down.","air.p":"We lodge H7 declarations for air-freight e-commerce consignments ahead of arrival, so parcels are released while the aircraft is still on approach.",
+"air.l1":"Bulk manifest processing per air waybill","air.l2":"H7 declarations for low-value consignments","air.l3":"Pre-arrival lodging and release notification","air.l4":"Handling at major EU air-cargo hubs","air.status":"H7 lodged before arrival",
+"road.eyebrow":"02 · Road freight","road.h":"Bonded, documented, on the move.","road.p":"Consignments leave the hub under customs control with every document in order, then go to last-mile carriers and parcel networks across the EU.",
+"road.l1":"Transit declarations (T1/T2)","road.l2":"Bonded transport between hubs and warehouses","road.l3":"Hand-off to last-mile carriers and parcel networks","road.l4":"Track and trace per parcel","road.status":"Under customs seal",
+"sea.eyebrow":"03 · Sea freight","sea.h":"Full containers, parcel-level control.","sea.p":"Containers of e-commerce goods arrive by sea. We declare at manifest level, deconsolidate, and keep every parcel traceable from quay to doorstep.",
+"sea.l1":"FCL and consolidated e-commerce shipments","sea.l2":"Deconsolidation and parcel-level declarations","sea.l3":"Manifest-level declarations","sea.l4":"Handling at major North Sea ports","sea.hint":"Hover the highlighted container",
+"plat.eyebrow":"04 · Technology","plat.h":"The Euro Dragon Platform.","plat.p":"Built in-house, built for volume. One platform takes in shipment data, checks it, files with Dutch Customs and shows the status of every parcel.",
+"ly.1":"Data intake","ly.1s":"Manifests and shipment data via API or EDI","ly.2":"AI processing","ly.2s":"Automatic HS classification, validation and risk checks","ly.3":"Event streaming","ly.3s":"Real-time processing of filings and customs messages","ly.4":"Direct Customs link","ly.4s":"Automated filing with Dutch Customs (Douane)","ly.5":"Client portal and app","ly.5s":"Live status and tracking per shipment",
+"why.eyebrow":"Why Euro Dragon","why.h":"Why shippers choose Euro Dragon","v1.h":"Speed","v1.p":"Declarations are lodged before arrival, so parcels move on without waiting at the hub.","v2.h":"Compliance","v2.p":"Validated data and classification checks before anything is filed.","v3.h":"Scale","v3.p":"Built for high-volume manifests, not one declaration at a time.","v4.h":"Transparency","v4.p":"Live status per parcel, from manifest to release.",
+"pr.eyebrow":"Process","pr.h":"From manifest to doorstep","p1.h":"Shipment data received","p1.p":"Manifest and parcel data arrive via API or EDI.","p2.h":"Pre-arrival declaration","p2.p":"H7 declarations are validated and lodged before arrival.","p3.h":"Arrival and release","p3.p":"Customs releases the consignment on arrival.","p4.h":"Distribution","p4.p":"Parcels move on to carriers and parcel networks.","p5.h":"Delivered","p5.p":"Status updates reach you and your customers.",
+"c.eyebrow":"Contact","c.h":"Ship to Europe. We'll handle customs.","c.p":"Tell us about your volumes and lanes. We'll come back with a proposal.","c.addr":"Address","c.phone":"Phone","c.mail":"Email",
+"f.name":"Name","f.co":"Company","f.mail":"Email","f.vol":"Monthly parcels","f.org":"Origin country","f.msg":"Message","f.send":"Send request","f.ok":"Thanks. We'll be in touch.",
+"st.lodged":"Lodged","st.accepted":"Accepted","st.released":"Released","tt.status":"Status","tt.parcels":"parcels"},
+nl:{"nav.services":"Diensten","nav.platform":"Platform","nav.process":"Werkwijze","nav.contact":"Contact","cta.quote":"Offerte aanvragen","cta.how":"Bekijk hoe het werkt",
+"rail.air":"Luchtvracht","rail.road":"Wegvervoer","rail.sea":"Zeevracht","rail.platform":"Platform",
+"hero.eyebrow":"Douane-inklaring voor e-commerce · DECO","hero.h1":["E-commerce douane,","<span class=\"hl\">ingeklaard</span> in het","tempo van de handel."],
+"hero.sub":"Euro Dragon klaart low-value e-commercezendingen in voor de Europese Unie. Manifest erin, pakketten vrijgegeven, via lucht, weg en zee.",
+"chip.1":"H7-dataset voor low value","chip.2":"IOSS en non-IOSS","chip.3":"Aangifte vóór aankomst","tag.example":"Voorbeeld","tag.live":"Voorbeeldfeed","u.parcels":"pakketten","u.pallets":"pallets",
+"air.eyebrow":"01 · Luchtvracht","air.h":"Ingeklaard voordat de wielen de baan raken.","air.p":"We dienen H7-aangiftes voor e-commercezendingen per luchtvracht in vóór aankomst, zodat pakketten al vrij zijn terwijl het toestel nog in de nadering zit.",
+"air.l1":"Bulkverwerking van manifesten per air waybill","air.l2":"H7-aangiftes voor low-value zendingen","air.l3":"Aangifte vóór aankomst met vrijgavemelding","air.l4":"Afhandeling op grote Europese vrachtluchthavens","air.status":"H7 ingediend vóór aankomst",
+"road.eyebrow":"02 · Wegvervoer","road.h":"Onder douaneverband, gedocumenteerd, onderweg.","road.p":"Zendingen verlaten de hub onder douanetoezicht met alle documenten op orde, en gaan door naar last-mile vervoerders en pakketnetwerken in de hele EU.",
+"road.l1":"Transitaangiftes (T1/T2)","road.l2":"Vervoer onder douaneverband tussen hubs en entrepots","road.l3":"Overdracht aan last-mile vervoerders en pakketnetwerken","road.l4":"Track en trace per pakket","road.status":"Onder douanezegel",
+"sea.eyebrow":"03 · Zeevracht","sea.h":"Volle containers, controle per pakket.","sea.p":"Containers met e-commercegoederen komen over zee binnen. Wij doen aangifte op manifestniveau, deconsolideren en houden elk pakket traceerbaar van kade tot voordeur.",
+"sea.l1":"FCL- en gegroepeerde e-commercezendingen","sea.l2":"Deconsolidatie en aangifte per pakket","sea.l3":"Aangiftes op manifestniveau","sea.l4":"Afhandeling in grote Noordzeehavens","sea.hint":"Beweeg over de gemarkeerde container",
+"plat.eyebrow":"04 · Technologie","plat.h":"Het Euro Dragon Platform.","plat.p":"Zelf gebouwd, gemaakt voor volume. Eén platform neemt zendingsdata in, controleert die, doet aangifte bij de Douane en toont de status van elk pakket.",
+"ly.1":"Data-inname","ly.1s":"Manifesten en zendingsdata via API of EDI","ly.2":"AI-verwerking","ly.2s":"Automatische HS-classificatie, validatie en risicocontroles","ly.3":"Event streaming","ly.3s":"Realtime verwerking van aangiftes en douaneberichten","ly.4":"Directe Douane-koppeling","ly.4s":"Geautomatiseerde aangifte bij de Nederlandse Douane","ly.5":"Klantportaal en app","ly.5s":"Live status en tracking per zending",
+"why.eyebrow":"Waarom Euro Dragon","why.h":"Waarom verladers kiezen voor Euro Dragon","v1.h":"Snelheid","v1.p":"Aangiftes liggen er vóór aankomst, dus pakketten wachten niet op de hub.","v2.h":"Compliance","v2.p":"Gevalideerde data en classificatiecontroles voordat er iets wordt ingediend.","v3.h":"Schaal","v3.p":"Gebouwd voor manifesten met hoge volumes, niet voor één aangifte tegelijk.","v4.h":"Transparantie","v4.p":"Live status per pakket, van manifest tot vrijgave.",
+"pr.eyebrow":"Werkwijze","pr.h":"Van manifest tot voordeur","p1.h":"Zendingsdata ontvangen","p1.p":"Manifest- en pakketdata komen binnen via API of EDI.","p2.h":"Aangifte vóór aankomst","p2.p":"H7-aangiftes worden gevalideerd en vóór aankomst ingediend.","p3.h":"Aankomst en vrijgave","p3.p":"De Douane geeft de zending vrij bij aankomst.","p4.h":"Distributie","p4.p":"Pakketten gaan door naar vervoerders en pakketnetwerken.","p5.h":"Afgeleverd","p5.p":"Statusupdates bereiken jou en je klanten.",
+"c.eyebrow":"Contact","c.h":"Verzend naar Europa. Wij regelen de douane.","c.p":"Vertel ons over je volumes en routes. We komen terug met een voorstel.","c.addr":"Adres","c.phone":"Telefoon","c.mail":"E-mail",
+"f.name":"Naam","f.co":"Bedrijf","f.mail":"E-mail","f.vol":"Pakketten per maand","f.org":"Land van herkomst","f.msg":"Bericht","f.send":"Verstuur aanvraag","f.ok":"Bedankt. We nemen contact met je op.",
+"st.lodged":"Ingediend","st.accepted":"Aanvaard","st.released":"Vrijgegeven","tt.status":"Status","tt.parcels":"pakketten"}};
+Object.assign(I18N.en,{"in.eyebrow": "About Euro Dragon", "in.h": "Customs clearance built for e-commerce volume", "in.p1": "E-commerce shipments are different from traditional freight. One consignment can hold thousands of low-value parcels, each with its own sender, receiver and value. Euro Dragon is a customs agency that specialises in exactly that: declaring low-value e-commerce goods into the EU, parcel by parcel, at scale.", "in.p2": "We work for e-commerce platforms, sellers and logistics partners shipping from outside the EU, mostly from Asia, into Europe. We file the declarations with Dutch Customs and make sure parcels are released and on their way to the customer.", "fa.1": "Declaration", "fa.1d": "H7 for low-value consignments", "fa.2": "VAT", "fa.2d": "IOSS and non-IOSS", "fa.3": "Modes", "fa.3d": "Air, road and sea", "fa.4": "Customs", "fa.4d": "Dutch Customs (Douane)", "h.handle": "What we handle", "h.send": "You send", "h.get": "You get", "air.p": "Most e-commerce volume into Europe arrives by air. We take the manifest as soon as the flight is booked, validate every parcel and lodge the H7 declarations before arrival. When the aircraft lands, the consignment is ready to be released.", "air.l1": "Manifest intake per master and house air waybill", "air.l2": "H7 declarations for low-value consignments", "air.l3": "VAT handling for IOSS and non-IOSS", "air.l4": "Pre-arrival lodging and release notifications", "air.send": "A manifest with parcel-level data: sender, receiver, description, value and weight", "air.get": "Declaration status and release per parcel", "road.p": "After release, or under transit when goods clear elsewhere, parcels travel by road to sorting centres and parcel networks across the EU. We prepare the transit documents and keep the customs status attached to every parcel.", "road.l2": "Bonded transport between hubs and customs warehouses", "road.l4": "Status per parcel until delivery", "road.send": "Route, carrier and pallet details", "road.get": "Transit MRN and live status", "sea.p": "Sea freight suits steady, less urgent volume. We declare at manifest level, coordinate deconsolidation at the warehouse and keep each parcel traceable from the quay to the final carrier.", "sea.l1": "FCL and consolidated e-commerce containers", "sea.l3": "Processing before the vessel berths", "sea.l4": "Coordination with terminal and warehouse", "sea.send": "Bill of lading and parcel manifest", "sea.get": "Release status per parcel", "plat.p": "Euro Dragon runs on its own software. Shipment data comes in through an API or EDI, is checked and classified, and is filed with Dutch Customs. You follow every parcel in the client portal.", "fq.eyebrow": "FAQ", "fq.h": "Questions shippers ask us", "fq.p": "Something not covered here? Ask us directly.", "q1": "What is e-commerce customs clearance?", "a1": "Declaring goods bought online and shipped from outside the EU, usually in large consolidated shipments of individual parcels. Every parcel needs its own customs data, so the work is about handling high volumes quickly and accurately.", "q2": "What is an H7 declaration?", "a2": "H7 is the EU's reduced data set for customs declarations of low-value consignments: goods with an intrinsic value up to €150 sent to consumers in the EU. It was introduced when the €22 VAT exemption ended in July 2021.", "q3": "What changed on 1 July 2026?", "a3": "The €150 customs duty relief for low-value consignments ended. An interim flat-rate customs duty of €3 now applies to low-value e-commerce goods. These consignments are still declared with H7, so accurate parcel data matters more than ever.", "q4": "IOSS or non-IOSS: what is the difference?", "a4": "With IOSS, the seller charges EU VAT at checkout and pays it through the Import One-Stop Shop, so the parcel is released without VAT at import. Without IOSS, import VAT is paid at the border and collected from the receiver. We handle both.", "q5": "What data do you need from us?", "a5": "A manifest with parcel-level data: sender and receiver, goods description, quantity, value, weight and, where available, the HS code. We validate the data and flag problems before anything is filed.", "q6": "Which modes of transport do you cover?", "a6": "Air, road and sea. Most e-commerce volume arrives by air; sea freight suits steady, less urgent volume, and road links hubs and parcel networks across the EU."});
+Object.assign(I18N.nl,{"in.eyebrow": "Over Euro Dragon", "in.h": "Douane-inklaring gebouwd voor e-commercevolume", "in.p1": "E-commercezendingen zijn anders dan traditionele vracht. Eén zending kan duizenden low-value pakketten bevatten, elk met een eigen afzender, ontvanger en waarde. Euro Dragon is een douane-expediteur die zich daarin specialiseert: low-value e-commercegoederen inklaren voor de EU, pakket voor pakket, op schaal.", "in.p2": "We werken voor e-commerceplatforms, verkopers en logistieke partners die van buiten de EU, vooral vanuit Azië, naar Europa verzenden. Wij dienen de aangiftes in bij de Douane en zorgen dat pakketten worden vrijgegeven en doorgaan naar de klant.", "fa.1": "Aangifte", "fa.1d": "H7 voor low-value zendingen", "fa.2": "Btw", "fa.2d": "IOSS en non-IOSS", "fa.3": "Modaliteiten", "fa.3d": "Lucht, weg en zee", "fa.4": "Douane", "fa.4d": "Nederlandse Douane", "h.handle": "Wat we afhandelen", "h.send": "Jij levert", "h.get": "Jij krijgt", "air.p": "Het grootste deel van het e-commercevolume naar Europa komt per vliegtuig. Wij ontvangen het manifest zodra de vlucht geboekt is, valideren elk pakket en dienen de H7-aangiftes in vóór aankomst. Als het toestel landt, ligt de zending klaar voor vrijgave.", "air.l1": "Manifestinname per master en house air waybill", "air.l2": "H7-aangiftes voor low-value zendingen", "air.l3": "Btw-afhandeling voor IOSS en non-IOSS", "air.l4": "Aangifte vóór aankomst en vrijgavemeldingen", "air.send": "Een manifest met data per pakket: afzender, ontvanger, omschrijving, waarde en gewicht", "air.get": "Aangiftestatus en vrijgave per pakket", "road.p": "Na vrijgave, of onder douaneverband als de goederen elders worden ingeklaard, gaan pakketten over de weg naar sorteercentra en pakketnetwerken in de hele EU. Wij maken de transitdocumenten op en houden de douanestatus aan elk pakket gekoppeld.", "road.l2": "Vervoer onder douaneverband tussen hubs en entrepots", "road.l4": "Status per pakket tot aflevering", "road.send": "Route, vervoerder en palletgegevens", "road.get": "Transit-MRN en live status", "sea.p": "Zeevracht past bij stabiele, minder urgente volumes. Wij doen aangifte op manifestniveau, coördineren de deconsolidatie in het warehouse en houden elk pakket traceerbaar van kade tot de laatste vervoerder.", "sea.l1": "FCL- en gegroepeerde e-commercecontainers", "sea.l3": "Verwerking voordat het schip afmeert", "sea.l4": "Afstemming met terminal en warehouse", "sea.send": "Bill of lading en pakketmanifest", "sea.get": "Vrijgavestatus per pakket", "plat.p": "Euro Dragon draait op eigen software. Zendingsdata komt binnen via API of EDI, wordt gecontroleerd en geclassificeerd, en wordt ingediend bij de Douane. Je volgt elk pakket in het klantportaal.", "fq.eyebrow": "Veelgestelde vragen", "fq.h": "Vragen die verladers ons stellen", "fq.p": "Staat je vraag er niet bij? Vraag het ons direct.", "q1": "Wat is e-commerce douane-inklaring?", "a1": "Het inklaren van online gekochte goederen die van buiten de EU worden verzonden, meestal in grote geconsolideerde zendingen met losse pakketten. Elk pakket heeft eigen douanedata nodig, dus het draait om grote volumes snel en nauwkeurig afhandelen.", "q2": "Wat is een H7-aangifte?", "a2": "H7 is de beperkte EU-dataset voor douaneaangiftes van low-value zendingen: goederen met een intrinsieke waarde tot €150 die naar consumenten in de EU gaan. De dataset werd ingevoerd toen de btw-vrijstelling van €22 in juli 2021 verdween.", "q3": "Wat is er veranderd per 1 juli 2026?", "a3": "De vrijstelling van douanerechten voor zendingen tot €150 is vervallen. Voor low-value e-commercegoederen geldt nu een tijdelijk vast douanerecht van €3. Deze zendingen worden nog steeds met H7 aangegeven, dus correcte pakketdata is belangrijker dan ooit.", "q4": "IOSS of non-IOSS: wat is het verschil?", "a4": "Bij IOSS rekent de verkoper de Europese btw af bij het afrekenen en draagt die af via de Import One-Stop Shop, zodat het pakket bij invoer zonder btw wordt vrijgegeven. Zonder IOSS wordt de invoer-btw aan de grens voldaan en bij de ontvanger verhaald. Wij handelen beide af.", "q5": "Welke data hebben jullie van ons nodig?", "a5": "Een manifest met data per pakket: afzender en ontvanger, goederenomschrijving, aantal, waarde, gewicht en waar mogelijk de HS-code. Wij valideren de data en melden problemen voordat er iets wordt ingediend.", "q6": "Welke vervoerswijzen ondersteunen jullie?", "a6": "Lucht, weg en zee. Het meeste e-commercevolume komt per vliegtuig; zeevracht past bij stabiele, minder urgente volumes en wegvervoer verbindt hubs en pakketnetwerken in de EU."});
+window.LANG='en';
+window.t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
+function applyLang(l){
+  LANG=l;document.documentElement.lang=l;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const v=I18N[l][el.dataset.i18n];if(typeof v==='string')el.innerHTML=v;});
+  const h=document.querySelector('[data-i18n-lines]');const lines=I18N[l][h.dataset.i18nLines];
+  h.innerHTML=lines.map(s=>'<span class="ln"><span>'+s+'</span></span>').join('');
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===l)));
+  try{localStorage.setItem('ed-lang',l)}catch(e){}
+}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>applyLang(b.dataset.lang)));
+try{const s=localStorage.getItem('ed-lang');if(s==='nl')applyLang('nl')}catch(e){}
+
+/* ---------------- form ---------------- */
+document.getElementById('qform').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target;
+  const ok=f.querySelector('#f-name').value.trim()&&/.+@.+\..+/.test(f.querySelector('#f-mail').value);
+  if(!ok){(f.querySelector('#f-name').value.trim()?f.querySelector('#f-mail'):f.querySelector('#f-name')).focus();return;}
+  document.getElementById('sent').hidden=false;
+});
+
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {DecalGeometry} from 'three/addons/geometries/DecalGeometry.js';
+import {Water} from 'three/addons/objects/Water.js';
+import {Sky} from 'three/addons/objects/Sky.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {Pass,FullScreenQuad} from 'three/addons/postprocessing/Pass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js';
+
+const V3=THREE.Vector3, C=THREE.Color;
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ss=(a,b,v)=>{const x=clamp((v-a)/(b-a));return x*x*(3-2*x)};
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const wrap=(v,a,b)=>{const r=b-a;return ((v-a)%r+r)%r+a};
+const rnd=(()=>{let s=1337;return()=>((s=Math.imul(s^s>>>15,s|1)^(s+Math.imul(s^s>>>7,s|61)),((s^s>>>14)>>>0)/4294967296))})();
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let mobile=matchMedia('(max-width: 820px)').matches;
+const YEL=new C(0xfcc917);
+const loaderBar=document.getElementById('ldbar'),loaderN=document.getElementById('ldn');
+
+/* ---------- renderer ---------- */
+const canvas=document.getElementById('gl');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance',alpha:false});}
+catch(e){document.documentElement.classList.add('no-gl');}
+
+/* ---------- smooth scroll ---------- */
+let lenis=null;
+document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();const el=document.querySelector(a.dataset.go);if(!el)return;
+  const off=a.dataset.go==='#hero'?0:(el.classList.contains('chapter')?innerHeight*0.62:0);
+  const y=el.getBoundingClientRect().top+scrollY+off;
+  if(lenis)lenis.scrollTo(y,{duration:1.8});else scrollTo({top:y,behavior:reduceMotion?'auto':'smooth'});
+}));
+
+const mouse={moved:false,x:innerWidth/2,y:innerHeight/2,nx:0,ny:0,rx:innerWidth/2,ry:innerHeight/2,sx:0,sy:0};
+addEventListener('pointermove',e=>{mouse.moved=true;mouse.x=e.clientX;mouse.y=e.clientY;mouse.nx=e.clientX/innerWidth*2-1;mouse.ny=e.clientY/innerHeight*2-1;},{passive:true});
+
+/* ---------- section metrics ---------- */
+const secs=[...document.querySelectorAll('[data-stage]')].map(el=>({el,stage:el.dataset.stage,kind:el.dataset.kind,ch:el.dataset.ch,top:0,h:0}));
+function measure(){secs.forEach(s=>{const r=s.el.getBoundingClientRect();s.top=r.top+scrollY;s.h=r.height;});}
+measure();addEventListener('load',measure);new ResizeObserver(measure).observe(document.querySelector('main'));
+function scrollState(){
+  const y=scrollY,vh=innerHeight,ym=y+vh*.5;
+  let k=0;for(let i=0;i<secs.length;i++)if(secs[i].top<=ym)k=i;
+  const s=secs[k];
+  const len=Math.max(s.h-vh,vh*.5);
+  const tt=clamp((y-s.top)/len);
+  let prev=null,mix=1;
+  if(k>0&&secs[k-1].stage!==s.stage){const W=vh*.6,d=ym-s.top;if(d<W){prev=secs[k-1];mix=ss(0,1,d/W);}}
+  return {k,sec:s,stage:s.stage,kind:s.kind,t:tt,prev,mix,y,vh};
+}
+
+/* ---------- shared textures ---------- */
+function canvasTex(w,h,draw,{srgb=true,repeat=false,aniso=8}={}){
+  const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);
+  const t=new THREE.CanvasTexture(c);if(srgb)t.colorSpace=THREE.SRGBColorSpace;
+  if(repeat){t.wrapS=t.wrapT=THREE.RepeatWrapping;}t.anisotropy=renderer?Math.min(aniso,renderer.capabilities.getMaxAnisotropy()):1;return t;
+}
+const glowTex=canvasTex(128,128,(g,w,h)=>{const r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.18,'rgba(255,255,255,.75)');r.addColorStop(.45,'rgba(255,255,255,.15)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,w,h);},{srgb:false});
+const imgLoad=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+
+function glowSprite(color,size,intensity=4){
+  const m=new THREE.SpriteMaterial({map:glowTex,color:new C(color).multiplyScalar(intensity),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,fog:false});
+  const s=new THREE.Sprite(m);s.scale.setScalar(size);return s;
+}
+function hdr(color,i){return new C(color).multiplyScalar(i);}
+
+function gradientSky(stops,{radius=9000,glowDir=null,glowColor=0x000000,glowPow=6,stars=0}={}){
+  const mat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
+    uniforms:{c0:{value:new C(stops[0])},c1:{value:new C(stops[1])},c2:{value:new C(stops[2])},c3:{value:new C(stops[3])},gDir:{value:glowDir?glowDir.clone().normalize():new V3(0,0,1)},gCol:{value:new C(glowColor)},gPow:{value:glowPow},uStars:{value:stars}},
+    vertexShader:`varying vec3 vDir;void main(){vDir=normalize(position);vec4 p=projectionMatrix*modelViewMatrix*vec4(position,1.);gl_Position=p.xyww;}`,
+    fragmentShader:`uniform vec3 c0,c1,c2,c3,gDir,gCol;uniform float gPow,uStars;varying vec3 vDir;
+      float h(vec3 p){return fract(sin(dot(p,vec3(12.9898,78.233,37.719)))*43758.5453);}
+      void main(){vec3 d=normalize(vDir);float y=d.y;
+        vec3 col=y<0.?mix(c3,c2,smoothstep(-.25,0.,y)):(y<.12?mix(c2,c1,smoothstep(0.,.12,y)):mix(c1,c0,smoothstep(.12,.7,y)));
+        float g=pow(max(dot(d,gDir),0.),gPow)*smoothstep(-.08,.08,y+.05)*(1.-smoothstep(0.,.5,y));col+=gCol*g;
+        if(uStars>0.){vec3 q=floor(d*420.);float s=step(.9982,h(q))*smoothstep(.05,.4,y);col+=vec3(.8,.85,1.)*s*uStars*(.5+.5*h(q+1.));}
+        gl_FragColor=vec4(col,1.);}`});
+  const m=new THREE.Mesh(new THREE.SphereGeometry(radius,48,24),mat);m.frustumCulled=false;m.renderOrder=-10;return m;
+}
+function envFrom(stops,spots=[]){
+  const sc=new THREE.Scene();sc.add(gradientSky(stops,{radius:50}));
+  spots.forEach(([pos,color,size])=>{const m=new THREE.Mesh(new THREE.SphereGeometry(size,16,8),new THREE.MeshBasicMaterial({color}));m.position.copy(pos);sc.add(m);});
+  const pm=new THREE.PMREMGenerator(renderer);const t=pm.fromScene(sc,.02).texture;pm.dispose();return t;
+}
+
+/* camera-facing ribbon for light trails */
+class Ribbon{
+  constructor(n,width,color,intensity=3){
+    this.n=n;this.w=width;const g=new THREE.BufferGeometry();
+    this.pos=new Float32Array(n*2*3);const a=new Float32Array(n*2),idx=[];
+    for(let i=0;i<n;i++){a[i*2]=a[i*2+1]=1-i/(n-1);if(i<n-1){const k=i*2;idx.push(k,k+1,k+2,k+1,k+3,k+2);}}
+    g.setAttribute('position',new THREE.BufferAttribute(this.pos,3));g.setAttribute('a',new THREE.BufferAttribute(a,1));g.setIndex(idx);
+    this.mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
+      uniforms:{col:{value:hdr(color,intensity)},op:{value:1}},
+      vertexShader:`attribute float a;varying float va;void main(){va=a;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+      fragmentShader:`uniform vec3 col;uniform float op;varying float va;void main(){gl_FragColor=vec4(col*pow(va,1.6)*op,1.);}`});
+    this.mesh=new THREE.Mesh(g,this.mat);this.mesh.frustumCulled=false;
+  }
+  update(pts,cam){
+    const tmp=new V3(),side=new V3(),tan=new V3();
+    for(let i=0;i<this.n;i++){
+      const p=pts[i],pa=pts[Math.max(0,i-1)],pb=pts[Math.min(this.n-1,i+1)];
+      tan.subVectors(pa,pb).normalize();tmp.subVectors(cam.position,p).normalize();side.crossVectors(tan,tmp).normalize().multiplyScalar(this.w*(1-i/this.n*.6));
+      this.pos.set([p.x+side.x,p.y+side.y,p.z+side.z,p.x-side.x,p.y-side.y,p.z-side.z],i*6);
+    }
+    this.mesh.geometry.attributes.position.needsUpdate=true;
+  }
+}
+
+/* camera keyframe helper */
+function keyCam(keys,t,cam,ctx){
+  let i=0;while(i<keys.length-2&&t>keys[i+1].t)i++;
+  const A=keys[i],B=keys[i+1];const s=ease(clamp((t-A.t)/(B.t-A.t)));
+  const p=A.pos(ctx).lerp(B.pos(ctx),s),l=A.look(ctx).lerp(B.look(ctx),s);
+  cam.position.copy(p);cam.lookAt(l);
+}
+function parallax(){}
+
+class Stage{
+  constructor(fov=38,near=.5,far=30000){this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera(fov,innerWidth/innerHeight,near,far);this.exposure=1;this.shiftX=0;this.shiftY=0;}
+  frame(){const W=innerWidth,H=innerHeight;this.camera.aspect=W/H;this.camera.setViewOffset(W,H,W*this.shiftX,H*this.shiftY,W,H);}
+}
+
+/* ============ GLOBE ============ */
+const latLon=(lat,lon,r=1)=>{const p=(90-lat)*Math.PI/180,th=(lon+180)*Math.PI/180;return new V3(-r*Math.sin(p)*Math.cos(th),r*Math.cos(p),r*Math.sin(p)*Math.sin(th));};
+class GlobeStage extends Stage{
+  constructor(tex){
+    super(32,.01,200);const s=this.scene;s.background=new C(0x02030a);
+    this.sun=new V3(-1,.38,.22).normalize();
+    this.tilt=new THREE.Group();this.spin=new THREE.Group();this.tilt.add(this.spin);s.add(this.tilt);
+    const eu=latLon(51,5);this.baseSpin=-Math.atan2(eu.x,eu.z);this.spin.rotation.y=this.baseSpin;this.tilt.rotation.x=.72;
+    this.earthMat=new THREE.ShaderMaterial({uniforms:{day:{value:tex.day},night:{value:tex.night},spec:{value:tex.spec},clouds:{value:tex.clouds},sun:{value:this.sun},time:{value:0}},
+      vertexShader:`varying vec2 vUv;varying vec3 vN;varying vec3 vW;void main(){vUv=uv;vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,
+      fragmentShader:`uniform sampler2D day,night,spec,clouds;uniform vec3 sun;uniform float time;varying vec2 vUv;varying vec3 vN;varying vec3 vW;
+      void main(){vec3 n=normalize(vN);vec3 v=normalize(cameraPosition-vW);float d=dot(n,sun);float dm=smoothstep(-.18,.22,d);
+        vec3 dc=texture2D(day,vUv).rgb;float cl=texture2D(clouds,vUv+vec2(time*.0015,0.)).r;
+        vec3 col=dc*(max(d,0.)*1.5+.015);
+        vec3 h=normalize(sun+v);float sp=pow(max(dot(n,h),0.),70.)*texture2D(spec,vUv).r;col+=vec3(1.,.82,.55)*sp*.7*dm;
+        col=mix(col,vec3(.9,.94,1.)*(max(d,0.)*1.0+.01),cl*.8*smoothstep(-.1,.3,d));
+        vec3 nl=texture2D(night,vUv).rgb;nl=pow(nl,vec3(1.6))*vec3(1.,.72,.38)*5.;col+=nl*(1.-dm)*(1.-cl*.85);
+        float f=pow(1.-max(dot(n,v),0.),3.2);col+=vec3(.25,.5,1.)*f*(.04+.75*smoothstep(-.35,.6,d));
+        gl_FragColor=vec4(col,1.);}`});
+    this.earth=new THREE.Mesh(new THREE.SphereGeometry(1,128,64),this.earthMat);this.spin.add(this.earth);
+    const atm=new THREE.Mesh(new THREE.SphereGeometry(1.085,96,48),new THREE.ShaderMaterial({side:THREE.BackSide,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,uniforms:{sun:{value:this.sun}},
+      vertexShader:`varying vec3 vN;varying vec3 vW;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,
+      fragmentShader:`uniform vec3 sun;varying vec3 vN;varying vec3 vW;void main(){vec3 v=normalize(cameraPosition-vW);float i=pow(clamp(.62+dot(vN,v),0.,1.),5.);float l=smoothstep(-.4,.5,dot(-vN,sun)*-1.);gl_FragColor=vec4(vec3(.3,.55,1.)*i*(.25+1.6*l),1.);}`}));
+    this.tilt.add(atm);
+    // stars
+    const sg=new THREE.BufferGeometry(),sp=[];for(let i=0;i<3500;i++){const v=new V3(rnd()*2-1,rnd()*2-1,rnd()*2-1).normalize().multiplyScalar(90);sp.push(v.x,v.y,v.z);}
+    sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));
+    s.add(new THREE.Points(sg,new THREE.PointsMaterial({size:1.6,sizeAttenuation:false,map:glowTex,transparent:true,depthWrite:false,color:hdr(0xc8d0ff,1.4),blending:THREE.AdditiveBlending})));
+    // routes
+    const asia=[[22.54,114.06],[31.23,121.47],[30.27,120.15],[34.75,113.62],[22.32,114.17],[37.46,126.44]];
+    const eu2=[[52.31,4.76],[50.64,5.44],[51.92,4.48]];
+    this.routes=[];
+    asia.forEach((a,i)=>{const b=eu2[i%3];const A=latLon(a[0],a[1]),B=latLon(b[0],b[1]);
+      const pts=[];const ang=A.angleTo(B);for(let j=0;j<=96;j++){const u=j/96;const p=new V3().copy(A).lerp(B,u).normalize();
+        // slerp
+        const q=new THREE.Quaternion().setFromUnitVectors(A.clone().normalize(),B.clone().normalize());const qi=new THREE.Quaternion().slerp(q,u);p.copy(A).normalize().applyQuaternion(qi);
+        p.multiplyScalar(1.004+Math.sin(Math.PI*u)*ang*.22);pts.push(p);}
+      const curve=new THREE.CatmullRomCurve3(pts);
+      const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{time:{value:0},off:{value:i*.17},draw:{value:0},glow:{value:1}},
+        vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+        fragmentShader:`uniform float time,off,draw,glow;varying vec2 vUv;void main(){float x=vUv.x;if(x>draw)discard;float hd=fract(time*.16+off);float c=smoothstep(hd-.28,hd,x)*step(x,hd);vec3 y=vec3(1.,.79,.09);gl_FragColor=vec4(y*(.22+c*4.)*glow,1.);}`});
+      const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,160,.0032,6,false),m);this.spin.add(tube);this.routes.push(m);
+      const dot=glowSprite(0xfcc917,.05,3);dot.position.copy(A).multiplyScalar(1.01);this.spin.add(dot);
+    });
+    eu2.forEach(b=>{const d=glowSprite(0xffffff,.06,4);d.position.copy(latLon(b[0],b[1],1.01));this.spin.add(d);});
+    this.ring=new THREE.Mesh(new THREE.RingGeometry(.02,.026,48),new THREE.MeshBasicMaterial({color:hdr(0xfcc917,3),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+    const sch=latLon(52.31,4.76,1.006);this.ring.position.copy(sch);this.ring.lookAt(sch.clone().multiplyScalar(2));this.spin.add(this.ring);
+    this.euLocal=latLon(51,6,1);this.intro=0;
+  }
+  update(t,time,dt,ctx){
+    const fin=ctx.kind==='finale';
+    this.earthMat.uniforms.time.value=time;
+    this.spin.rotation.y=this.baseSpin+Math.sin(time*.05)*.05;
+    this.routes.forEach((m,i)=>{m.uniforms.time.value=time;m.uniforms.draw.value=fin?1:clamp(this.intro*1.6-i*.14)*1.0001;m.uniforms.glow.value=fin?1.5:1;});
+    const rs=1+((time*.6)%1)*2.5;this.ring.scale.setScalar(rs);this.ring.material.opacity=1-((time*.6)%1);
+    const eu=this.euLocal.clone();this.spin.localToWorld(eu);
+    const tt=0;
+    const target=new V3().lerp(eu.clone().multiplyScalar(.92),tt);
+    const dir=new V3(0,.05,1).normalize().lerp(eu.clone().normalize(),tt).normalize();
+    const dist=fin?(mobile?3.6:3.1):lerp(mobile?6.8:5.2,1.42,tt);
+    this.camera.position.copy(target).addScaledVector(dir,dist);this.camera.up.set(0,1,0);this.camera.lookAt(target);parallax(this.camera,1-tt);
+    this.exposure=ctx.kind==='intro'?.32:1;this.shiftX=fin?0:(mobile?0:lerp(-.22,0,tt));this.shiftY=fin?-.42:(mobile?lerp(-.12,0,tt):0);this.frame();
+  }
+}
+
+/* ============ AIR ============ */
+class AirStage extends Stage{
+  constructor(){
+    super(36,1,30000);const s=this.scene;
+    s.fog=new THREE.FogExp2(0x0b1030,.00042);
+    s.add(gradientSky([0x02030c,0x0b1235,0x29295a,0x05060c],{glowDir:new V3(.2,0,1),glowColor:0x3a2a40,glowPow:4,stars:1.2}));
+    s.environment=envFrom([0x0a0f2a,0x1d2552,0x3b3a66,0x07080d],[[new V3(0,6,40),hdr(0xffd6a0,3),6]]);s.environmentIntensity=.7;
+    s.add(new THREE.HemisphereLight(0x3a4890,0x0a0a10,.9));
+    const moon=new THREE.DirectionalLight(0xb8c4ff,1.1);moon.position.set(-.5,.7,-.3);s.add(moon);
+    // ground
+    const g=new THREE.Mesh(new THREE.PlaneGeometry(40000,40000),new THREE.MeshStandardMaterial({color:0x04050a,roughness:1}));g.rotation.x=-Math.PI/2;g.position.y=-.05;s.add(g);
+    this.buildRunway();this.buildCity();this.buildClouds();
+    this.plane=null;this.trails=[new Ribbon(70,.28,0xfcc917,1.5),new Ribbon(70,.28,0xfcc917,1.5)];this.trails.forEach(r=>s.add(r.mesh));
+    this.landSpot=new THREE.SpotLight(0xfff2dd,0,900,.32,.6,1.6);s.add(this.landSpot,this.landSpot.target);
+  }
+  buildRunway(){
+    const s=this.scene;
+    const tex=canvasTex(512,4096,(g,w,h)=>{
+      g.fillStyle='#16171c';g.fillRect(0,0,w,h);
+      for(let i=0;i<26000;i++){g.fillStyle=`rgba(${rnd()<.5?255:0},${rnd()<.5?255:0},${rnd()<.5?255:0},${rnd()*.04})`;g.fillRect(rnd()*w,rnd()*h,2,2+rnd()*6);}
+      g.fillStyle='rgba(0,0,0,.25)';g.fillRect(w*.4,0,w*.2,h);
+      const m=h/3200,px=w/60;g.fillStyle='#d9dbe0';
+      g.fillRect(px*1.2,0,px*.9,h);g.fillRect(w-px*2.1,0,px*.9,h);
+      for(let z=120;z<3100;z+=50)g.fillRect(w/2-px*.45,z*m,px*.9,30*m);
+      for(let i=0;i<8;i++){g.fillRect(px*(3+i*1.8),6*m,px*1.2,30*m);g.fillRect(w-px*(4.2+i*1.8),6*m,px*1.2,30*m);}
+      g.fillRect(px*20,300*m,px*4,45*m);g.fillRect(w-px*24,300*m,px*4,45*m);
+      for(let z=150;z<900;z+=150){for(let k=0;k<3;k++){g.fillRect(px*(16+k*1.6),z*m,px*.9,22*m);g.fillRect(w-px*(17+k*1.6),z*m,px*.9,22*m);}}
+      g.font=`900 ${px*7}px "Archivo Black"`;g.textAlign='center';g.save();g.translate(w/2,60*m);g.scale(1,3.2);g.fillText('18R',0,0);g.restore();
+    },{aniso:16});
+    const rw=new THREE.Mesh(new THREE.PlaneGeometry(60,3200),new THREE.MeshStandardMaterial({map:tex,roughness:.42,metalness:.05,envMapIntensity:.8}));
+    rw.rotation.x=-Math.PI/2;rw.position.set(0,.02,1600);s.add(rw);
+    const sh=new THREE.Mesh(new THREE.PlaneGeometry(180,3600),new THREE.MeshStandardMaterial({color:0x0a0b0f,roughness:.9}));sh.rotation.x=-Math.PI/2;sh.position.set(0,.005,1600);s.add(sh);
+    const sphere=new THREE.SphereGeometry(.3,8,6);
+    const mk=(arr,color,inten)=>{const im=new THREE.InstancedMesh(sphere,new THREE.MeshBasicMaterial({color:hdr(color,inten),fog:false}),arr.length);const m=new THREE.Matrix4();arr.forEach((p,i)=>{m.makeTranslation(p[0],p[1],p[2]);im.setMatrixAt(i,m);});s.add(im);return im;};
+    const edge=[],cen=[],thr=[],end=[],app=[],taxi=[];
+    for(let z=0;z<=3200;z+=60){edge.push([-31,.6,z],[31,.6,z]);}
+    for(let z=15;z<3200;z+=15)cen.push([0,.12,z]);
+    for(let x=-30;x<=30;x+=3){thr.push([x,.5,-1]);end.push([x,.5,3201]);}
+    for(let z=-900;z<-30;z+=30){for(let x=-6;x<=6;x+=3)app.push([x,1.2,z]);if(z===-300)for(let x=-15;x<=15;x+=2.5)app.push([x,1.2,z]);}
+    for(let z=200;z<3000;z+=40){taxi.push([-120,.4,z],[120,.4,z]);}
+    mk(edge,0xffe9c4,3.2);mk(cen,0xffffff,1.6);mk(thr,0x2dff7a,4);mk(end,0xff2a2a,4);mk(app,0xfff2d8,3.6);mk(taxi,0x3a6bff,3.5);
+    this.rabbit=glowSprite(0xffffff,6,5);s.add(this.rabbit);
+    // terminal + tower
+    const winTex=canvasTex(512,128,(g,w,h)=>{g.fillStyle='#0b0d14';g.fillRect(0,0,w,h);for(let y=10;y<h-8;y+=14)for(let x=4;x<w;x+=9){if(rnd()<.62){const c=rnd();g.fillStyle=c<.75?`rgba(255,${200+rnd()*40|0},140,${.5+rnd()*.5})`:`rgba(170,200,255,${.6})`;g.fillRect(x,y,6,7);}}});
+    const term=new THREE.Mesh(new THREE.BoxGeometry(60,22,700),[new THREE.MeshStandardMaterial({color:0x0b0d14,emissive:0xffffff,emissiveMap:winTex,emissiveIntensity:2.2,roughness:.6}),new THREE.MeshStandardMaterial({color:0x0b0d14,emissive:0xffffff,emissiveMap:winTex,emissiveIntensity:2.2}),new THREE.MeshStandardMaterial({color:0x101218}),new THREE.MeshStandardMaterial({color:0x101218}),new THREE.MeshStandardMaterial({color:0x0b0d14}),new THREE.MeshStandardMaterial({color:0x0b0d14})]);
+    term.position.set(-330,11,1500);s.add(term);
+    const cargo=term.clone();cargo.scale.set(1.2,.8,.6);cargo.position.set(-310,9,700);s.add(cargo);
+    const tw=new THREE.Mesh(new THREE.CylinderGeometry(4,6,70,16),new THREE.MeshStandardMaterial({color:0x1a1c24,roughness:.6}));tw.position.set(-200,35,980);s.add(tw);
+    const cab=new THREE.Mesh(new THREE.CylinderGeometry(11,8,9,16),new THREE.MeshStandardMaterial({color:0x10131c,emissive:0x9fd0ff,emissiveIntensity:1.6,roughness:.2}));cab.position.set(-200,74,980);s.add(cab);
+    this.beacons=[];[[-200,80,980],[-330,23,1200],[-330,23,1800]].forEach(p=>{const b=glowSprite(0xff2020,8,6);b.position.set(...p);s.add(b);this.beacons.push(b);});
+    for(let z=600;z<2100;z+=150){const m=glowSprite(0xffd7a0,30,2.5);m.position.set(-250,30,z);s.add(m);const pole=new THREE.Mesh(new THREE.CylinderGeometry(.6,.6,30,6),new THREE.MeshStandardMaterial({color:0x111318}));pole.position.set(-250,15,z);s.add(pole);}
+  }
+  buildCity(){
+    const pts=[],col=[];const cA=new C(0xffb060),cB=new C(0xfff0d0),cC=new C(0x9ec0ff);
+    for(let k=0;k<26;k++){const cx=(rnd()*2-1)*9000,cz=(rnd()*2-1)*9000;if(Math.abs(cx)<700&&cz>-3500&&cz<4200)continue;const n=150+rnd()*500|0,r=200+rnd()*900;
+      for(let i=0;i<n;i++){const a=rnd()*6.283,d=Math.pow(rnd(),.7)*r;pts.push(cx+Math.cos(a)*d,1,cz+Math.sin(a)*d);const c=rnd()<.7?cA:(rnd()<.6?cB:cC);col.push(c.r*3,c.g*3,c.b*3);}}
+    for(let i=0;i<1400;i++){const x=(rnd()*2-1)*14000,z=(rnd()*2-1)*14000;if(Math.abs(x)<500)continue;pts.push(x,1,z);col.push(cA.r*2,cA.g*2,cA.b*2);}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+    this.scene.add(new THREE.Points(g,new THREE.PointsMaterial({size:7,map:glowTex,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:true})));
+  }
+  buildClouds(){
+    const ct=canvasTex(256,256,(g,w,h)=>{for(let i=0;i<34;i++){const x=w/2+(rnd()-.5)*w*.55,y=h/2+(rnd()-.5)*h*.3,r=30+rnd()*70;const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(255,255,255,.22)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,w,h);}});
+    this.clouds=new THREE.Group();
+    for(let i=0;i<120;i++){
+      const m=new THREE.SpriteMaterial({map:ct,color:new C().setRGB(.045+rnd()*.02,.05+rnd()*.02,.09+rnd()*.03),transparent:true,depthWrite:false,opacity:.75,fog:true});
+      const sp=new THREE.Sprite(m);const sc=180+rnd()*320;sp.scale.set(sc*1.6,sc*.7,1);
+      sp.position.set((rnd()*2-1)*1600,150+rnd()*70,-3600+rnd()*3000);this.clouds.add(sp);
+    }
+    this.scene.add(this.clouds);
+  }
+  setPlane(root,info){
+    this.plane=root;this.info=info;this.scene.add(root);
+    this.navL=glowSprite(0xff2020,3,8);this.navR=glowSprite(0x20ff60,3,8);this.strL=glowSprite(0xffffff,4,9);this.strR=glowSprite(0xffffff,4,9);
+    this.bcn=glowSprite(0xff2020,3,8);this.land=glowSprite(0xfff4e0,1.4,1.8);this.land2=glowSprite(0xfff4e0,1.4,1.8);
+    const tip=info.tip;
+    this.navL.position.set(tip.x,tip.y,tip.z);this.navR.position.set(-tip.x,tip.y,tip.z);this.strL.position.copy(this.navL.position);this.strR.position.copy(this.navR.position);
+    this.bcn.position.set(0,info.top,info.midZ);this.land.position.set(info.root.x,info.root.y,info.root.z);this.land2.position.set(-info.root.x,info.root.y,info.root.z);
+    [this.navL,this.navR,this.strL,this.strR,this.bcn,this.land,this.land2].forEach(o=>{o.scale.multiplyScalar(1/info.scale);root.add(o);});
+  }
+  path(t){
+    let x,y,z,pitch;
+    if(t<.45){const u=t/.45;z=lerp(-3000,-700,u);y=lerp(330,49.8,ss(0,1,u)*.85+u*.15);x=560*Math.pow(1-u,2.2);pitch=.02;}
+    else if(t<.64){const u=(t-.45)/.19;z=lerp(-700,250,u);y=.0524*(250-z);x=0;pitch=.05+ss(.75,1,u)*.06;}
+    else{const u=(t-.64)/.36;z=250+1300*(1-Math.pow(1-u,2));y=0;x=0;pitch=.11*(1-ss(0,.25,u));}
+    return {p:new V3(x,y,z),pitch};
+  }
+  pose(t){
+    const a=this.path(t),b=this.path(Math.min(1,t+.004)),c=this.path(Math.max(0,t-.004));
+    const yaw=Math.atan2(b.p.x-c.p.x,b.p.z-c.p.z);
+    const yawB=Math.atan2(this.path(Math.min(1,t+.012)).p.x-b.p.x,this.path(Math.min(1,t+.012)).p.z-b.p.z);
+    const roll=clamp((yawB-yaw)*-9,-.5,.5);
+    const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(-a.pitch,yaw,roll,'YXZ'));
+    return {p:a.p,q,yaw};
+  }
+  update(t,time,dt,ctx){
+    const s=this.scene,P=this.pose(t);
+    if(P.p.y>1)P.p.y+=Math.sin(time*.9)*.4;
+    const fwd=new V3(0,0,1).applyQuaternion(P.q);
+    if(this.plane){
+      this.plane.position.copy(P.p);this.plane.quaternion.copy(P.q);
+      const gear=t>.34;this.info.gear.forEach(n=>n.visible=gear);
+      const blink=(time%1.3)<.06||((time%1.3)>.14&&(time%1.3)<.2);
+      this.strL.visible=this.strR.visible=blink;this.bcn.visible=(time%1)<.5;
+      const landOn=t>.3;this.land.visible=this.land2.visible=landOn;
+      this.landSpot.intensity=landOn?lerp(0,5e4,ss(.3,.45,t)):0;
+      this.landSpot.position.copy(P.p).addScaledVector(fwd,10).y+=2;this.landSpot.target.position.copy(P.p).addScaledVector(fwd,160).setY(0);
+      // trails
+      const op=ss(1,0,ss(.6,.7,t));
+      this.trails.forEach((r,k)=>{const off=this.navL.position.clone().multiplyScalar(this.info.scale);if(k)off.x*=-1;const pts=[];
+        for(let i=0;i<r.n;i++){const pp=this.pose(Math.max(0,t-i*.0022));pts.push(off.clone().applyQuaternion(pp.q).add(pp.p));}
+        r.update(pts,this.camera);r.mat.uniforms.op.value=op*(t<.004?0:1);});
+    }
+    this.rabbit.position.set(0,1.4,-900+((time*1.8)%1)*870);
+    this.beacons.forEach(b=>b.visible=(time%1.4)<.7);
+    const local=(x,y,z)=>()=>new V3(x,y,z).applyQuaternion(P.q).add(P.p);
+    const world=(x,y,z)=>()=>new V3(x,y,z);
+    keyCam([
+      {t:0,pos:local(60,10,54),look:local(0,1,0)},
+      {t:1,pos:local(42,5,20),look:local(0,2,6)}],t,this.camera);
+    parallax(this.camera,.6);
+    this.shiftX=mobile?0:-.16;this.shiftY=mobile?.16:0;this.frame();this.exposure=1.0;
+  }
+}
+
+/* ============ ROAD ============ */
+const LANE=-10.25;
+class RoadStage extends Stage{
+  constructor(livery){
+    super(40,.3,12000);const s=this.scene;
+    s.fog=new THREE.FogExp2(0x141a3e,.0026);
+    s.add(gradientSky([0x050717,0x151b46,0x7a4a3c,0x07080f],{radius:6000,glowDir:new V3(.15,0,1),glowColor:0xd78a3a,glowPow:5,stars:.6}));
+    s.environment=envFrom([0x0a0d26,0x222a5c,0x9a6040,0x08090e],[[new V3(5,3,40),hdr(0xffc890,4),5],[new V3(-30,20,-20),hdr(0x9fb0ff,1.5),8]]);s.environmentIntensity=.8;
+    s.add(new THREE.HemisphereLight(0x3d4a90,0x0a0a12,.7));
+    const dl=new THREE.DirectionalLight(0xffc6a0,.5);dl.position.set(.2,.3,1);s.add(dl);
+    // road
+    const tile=60;
+    this.roadTex=canvasTex(1024,2048,(g,w,h)=>{
+      const X=x=>(x+17)/34*w,Z=z=>z/tile*h;
+      g.fillStyle='#1a1b20';g.fillRect(0,0,w,h);
+      for(let i=0;i<40000;i++){const v=rnd()*40|0;g.fillStyle=`rgba(${v+30},${v+30},${v+34},.35)`;g.fillRect(rnd()*w,rnd()*h,2,2);}
+      g.fillStyle='#202127';g.fillRect(X(-.9),0,X(.9)-X(-.9),h);
+      g.fillStyle='#e8e8ea';
+      [-12,12].forEach(x=>g.fillRect(X(x)-4,0,8,h));[-1.4,1.4].forEach(x=>g.fillRect(X(x)-4,0,8,h));
+      [-5,-8.6,5,8.6].forEach(x=>{for(let z=0;z<tile;z+=12)g.fillRect(X(x)-3.5,Z(z),7,Z(3));});
+      g.fillStyle='rgba(0,0,0,.18)';[-3.25,-6.8,-10.3,3.25,6.8,10.3].forEach(x=>{g.fillRect(X(x-.9),0,X(.5)-X(0),h);g.fillRect(X(x+.6),0,X(.5)-X(0),h);});
+    },{repeat:true,aniso:16});
+    this.roadTex.repeat.set(1,1200/tile);
+    const road=new THREE.Mesh(new THREE.PlaneGeometry(34,1200),new THREE.MeshStandardMaterial({map:this.roadTex,roughness:.5,metalness:.05,envMapIntensity:.7}));road.rotation.x=-Math.PI/2;road.position.z=300;s.add(road);
+    const field=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),new THREE.MeshStandardMaterial({color:0x07090a,roughness:1}));field.rotation.x=-Math.PI/2;field.position.y=-.05;s.add(field);
+    const bar=new THREE.Mesh(new THREE.BoxGeometry(.5,.9,1200),new THREE.MeshStandardMaterial({color:0x8a8f99,metalness:.9,roughness:.35}));bar.position.set(0,.6,300);s.add(bar);
+    [-12.6,12.6].forEach(x=>{const r=new THREE.Mesh(new THREE.BoxGeometry(.15,.35,1200),new THREE.MeshStandardMaterial({color:0x9aa0aa,metalness:.9,roughness:.3}));r.position.set(x*1.06,.7,300);s.add(r);});
+    // poles
+    this.N=24;const poleG=new THREE.CylinderGeometry(.14,.2,12,8);poleG.translate(0,6,0);
+    const armG=new THREE.BoxGeometry(12,.15,.15);armG.translate(0,12,0);
+    const headG=new THREE.BoxGeometry(1.2,.25,.5);
+    const pm=new THREE.MeshStandardMaterial({color:0x6d717b,metalness:.8,roughness:.4});
+    this.poles=new THREE.InstancedMesh(poleG,pm,this.N);this.arms=new THREE.InstancedMesh(armG,pm,this.N);
+    this.heads=new THREE.InstancedMesh(headG,new THREE.MeshBasicMaterial({color:hdr(0xffe0b0,9)}),this.N*2);
+    const poolTex=canvasTex(128,128,(g)=>{const r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,'rgba(255,255,255,.9)');r.addColorStop(.5,'rgba(255,255,255,.28)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,128,128);},{srgb:false});
+    this.pools=new THREE.InstancedMesh(new THREE.PlaneGeometry(22,30).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:poolTex,color:hdr(0xffc890,.55),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),this.N*2);
+    this.halos=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:glowTex,color:hdr(0xffd8a8,2.2),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),this.N*2);
+    [this.poles,this.arms,this.heads,this.pools,this.halos].forEach(m=>{m.frustumCulled=false;s.add(m);});
+    // trees
+    this.TN=260;this.trees=new THREE.InstancedMesh(new THREE.ConeGeometry(2.6,9,7).translate(0,4.5,0),new THREE.MeshStandardMaterial({color:0x030504,roughness:1,envMapIntensity:0}),this.TN);this.trees.frustumCulled=false;
+    this.treeData=[];for(let i=0;i<this.TN;i++){const side=rnd()<.5?-1:1;this.treeData.push({x:side*(45+Math.pow(rnd(),1.3)*160),z:rnd()*1400,s:.9+rnd()*1.2});}
+    s.add(this.trees);
+    // traffic
+    this.cars=[];const carG=new RoundedBoxGeometry(1.85,1.4,4.6,3,.35);
+    const mkCar=(color)=>{const g=new THREE.Group();const b=new THREE.Mesh(carG,new THREE.MeshPhysicalMaterial({color,metalness:.7,roughness:.32,clearcoat:1}));b.position.y=.95;g.add(b);
+      const tl=new THREE.Mesh(new THREE.BoxGeometry(1.6,.12,.05),new THREE.MeshBasicMaterial({color:hdr(0xff1a1a,9)}));tl.position.set(0,1.15,-2.31);g.add(tl);
+      [-.65,.65].forEach(x=>{const h=new THREE.Mesh(new THREE.BoxGeometry(.4,.14,.05),new THREE.MeshBasicMaterial({color:hdr(0xf4f6ff,10)}));h.position.set(x,.95,2.31);g.add(h);});
+      s.add(g);return g;};
+    for(let i=0;i<5;i++){const g=mkCar([0x222a3a,0x3a3d44,0x6a0f12,0xd0d3da,0x101012][i]);this.cars.push({g,lane:[-3.25,-6.8,-3.25,-6.8,-3.25][i],z0:-120+i*85,v:4+i*2.2});}
+    this.onc=[];for(let i=0;i<9;i++){const g=mkCar(0x1a1c24);g.rotation.y=Math.PI;this.onc.push({g,lane:[3.25,6.8,10.3][i%3],z0:i*130,v:90+rnd()*30});}
+    // turbines + warehouses
+    this.turbines=[];for(let i=0;i<6;i++){const g=new THREE.Group();const m=new THREE.MeshStandardMaterial({color:0x1b1f2e,roughness:.7});
+      const tw=new THREE.Mesh(new THREE.CylinderGeometry(1.4,2.6,90,12),m);tw.position.y=45;g.add(tw);const nac=new THREE.Mesh(new THREE.BoxGeometry(3,3,8),m);nac.position.set(0,91,0);g.add(nac);
+      const rot=new THREE.Group();rot.position.set(0,91,4.2);for(let k=0;k<3;k++){const bl=new THREE.Mesh(new THREE.BoxGeometry(1.6,46,.5).translate(0,23,0),m);bl.rotation.z=k*2.094;rot.add(bl);}g.add(rot);
+      const lt=glowSprite(0xff2020,10,8);lt.position.set(0,93.5,0);g.add(lt);
+      g.position.set(380+i*160+rnd()*80,0,200+i*240);g.rotation.y=-.4;s.add(g);this.turbines.push({g,rot,lt,z0:g.position.z,ph:rnd()*6});}
+    this.whs=[];
+    const signTex=canvasTex(1024,256,(g,w,h)=>{g.fillStyle='#1d2150';g.fillRect(0,0,w,h);if(livery.logo)g.drawImage(livery.logo,40,28,(h-56)*livery.logo.width/livery.logo.height,h-56);});
+    for(let i=0;i<2;i++){const g=new THREE.Group();const box=new THREE.Mesh(new THREE.BoxGeometry(90,16,260),new THREE.MeshStandardMaterial({color:0x1d2029,roughness:.8}));box.position.y=8;g.add(box);
+      for(let d=0;d<14;d++){const dk=new THREE.Mesh(new THREE.PlaneGeometry(4,4.4),new THREE.MeshBasicMaterial({color:hdr(0xffd9a0,d%3?2.2:.3)}));dk.position.set(45.05,2.6,-110+d*17);dk.rotation.y=Math.PI/2;g.add(dk);}
+      const strip=new THREE.Mesh(new THREE.PlaneGeometry(250,.4),new THREE.MeshBasicMaterial({color:hdr(0xbfd4ff,4)}));strip.position.set(45.06,15,0);strip.rotation.y=Math.PI/2;g.add(strip);
+      if(i===0){const sg=new THREE.Mesh(new THREE.PlaneGeometry(40,10),new THREE.MeshBasicMaterial({map:signTex,color:hdr(0xffffff,1.6)}));sg.position.set(45.1,10,30);sg.rotation.y=Math.PI/2;g.add(sg);}
+      g.position.set(-150,0,500+i*1500);s.add(g);this.whs.push({g,z0:g.position.z});}
+    // truck
+    this.truck=makeTruck(livery);this.truck.group.position.x=LANE;s.add(this.truck.group);
+    this.trailsT=[new Ribbon(40,.12,0xfcc917,4),new Ribbon(40,.12,0xfcc917,4)];this.trailsT.forEach(r=>s.add(r.mesh));
+    this.vel=0;
+  }
+  update(t,time,dt,ctx){
+    const dist=t*450+time*9;
+    this.roadTex.offset.y=-(dist/60);
+    const m=new THREE.Matrix4(),q=new THREE.Quaternion(),sc=new V3(1,1,1),p=new V3();
+    for(let i=0;i<this.N;i++){
+      const z=wrap(i*50-dist,-400,800);m.makeTranslation(0,0,z);this.poles.setMatrixAt(i,m);this.arms.setMatrixAt(i,m);
+      [-1,1].forEach((sd,k)=>{m.makeTranslation(sd*5.8,11.85,z);this.heads.setMatrixAt(i*2+k,m);m.makeTranslation(sd*6.4,.04,z);this.pools.setMatrixAt(i*2+k,m);
+        p.set(sd*5.8,11.6,z);const d=this.camera.position.distanceTo(p);m.compose(p,this.camera.quaternion,sc.setScalar(clamp(d*.05,2.4,9)));this.halos.setMatrixAt(i*2+k,m);});
+    }
+    [this.poles,this.arms,this.heads,this.pools,this.halos].forEach(x=>x.instanceMatrix.needsUpdate=true);
+    for(let i=0;i<this.TN;i++){const d=this.treeData[i];m.compose(p.set(d.x,0,wrap(d.z-dist,-500,900)),q.identity(),sc.setScalar(d.s));this.trees.setMatrixAt(i,m);}
+    this.trees.instanceMatrix.needsUpdate=true;
+    this.cars.forEach(c=>{c.g.position.set(c.lane,0,wrap(c.z0+time*c.v-t*60,-250,500));});
+    this.onc.forEach(c=>{c.g.position.set(c.lane,0,wrap(c.z0-dist*1.9-time*c.v,-500,900));});
+    this.turbines.forEach(tb=>{tb.g.position.z=wrap(tb.z0-dist*.6,-1200,2600);tb.rot.rotation.z=time*.5+tb.ph;tb.lt.visible=(time+tb.ph)%2<1;});
+    this.whs.forEach(w=>{w.g.position.z=wrap(w.z0-dist,-900,2200);});
+    this.truck.wheels.forEach(w=>w.rotation.x=dist/.52);
+    this.truck.group.position.y=Math.sin(time*7)*.012;this.truck.body.rotation.z=Math.sin(time*1.3)*.004;
+    const tr=this.truck.group.position;
+    this.trailsT.forEach((r,k)=>{const pts=[];for(let i=0;i<r.n;i++)pts.push(new V3(tr.x+(k?1.28:-1.28),.35,-12.4-i*3));r.update(pts,this.camera);});
+    const v=Math.abs(lenis?lenis.velocity:0);this.vel=lerp(this.vel,v,.08);
+    keyCam([
+      {t:0,pos:()=>new V3(LANE+13,3,13),look:()=>new V3(LANE,2.2,-3)},
+      {t:1,pos:()=>new V3(LANE+16,4,-7),look:()=>new V3(LANE,2.2,-4)}],t,this.camera);
+    parallax(this.camera,.6);
+    this.shiftX=mobile?0:.14;this.shiftY=mobile?.16:0;this.frame();this.exposure=1.05;
+  }
+}
+
+function makeTruck(livery){
+  const g=new THREE.Group(),body=new THREE.Group();g.add(body);
+  const paint=new THREE.MeshPhysicalMaterial({color:0x2c3270,metalness:.55,roughness:.32,clearcoat:1,clearcoatRoughness:.08});
+  const dark=new THREE.MeshStandardMaterial({color:0x121318,roughness:.6,metalness:.4});
+  const chrome=new THREE.MeshStandardMaterial({color:0xd8dbe2,metalness:1,roughness:.18});
+  const glass=new THREE.MeshPhysicalMaterial({color:0x05070e,metalness:.9,roughness:.04,clearcoat:1});
+  const add=(geo,mat,x,y,z,parent=body)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;};
+  // cab
+  add(new RoundedBoxGeometry(2.5,2.85,2.3,5,.16),paint,0,2.55,3.5);
+  add(new RoundedBoxGeometry(2.46,.9,2.2,4,.2),paint,0,4.25,3.35).scale.set(1,1,1);
+  const def=add(new RoundedBoxGeometry(2.4,.9,1.6,4,.3),paint,0,4.2,2.7);def.rotation.x=-.32;
+  add(new THREE.PlaneGeometry(2.25,1.05),glass,0,3.35,4.66);
+  [-1,1].forEach(s=>{const w=add(new THREE.PlaneGeometry(.9,.75),glass,s*1.256,3.35,4.05);w.rotation.y=s*Math.PI/2;});
+  const grilleTex=canvasTex(256,128,(c,w,h)=>{c.fillStyle='#0d0e12';c.fillRect(0,0,w,h);c.fillStyle='#3a3d46';for(let y=8;y<h;y+=14)c.fillRect(10,y,w-20,5);});
+  add(new THREE.PlaneGeometry(1.7,.95),new THREE.MeshStandardMaterial({map:grilleTex,metalness:.6,roughness:.4}),0,2.05,4.66);
+  add(new RoundedBoxGeometry(2.55,.5,.4,3,.1),dark,0,1.1,4.55);
+  const hl=new THREE.MeshBasicMaterial({color:hdr(0xf4f7ff,6)});
+  [-1,1].forEach(s=>{add(new RoundedBoxGeometry(.5,.2,.08,2,.04),hl,s*.95,1.42,4.69);add(new THREE.BoxGeometry(.6,.04,.05),new THREE.MeshBasicMaterial({color:hdr(0xffffff,10)}),s*.92,1.62,4.69);
+    const arm=add(new THREE.BoxGeometry(.06,.06,.5),dark,s*1.35,3.6,4.3);const mir=add(new RoundedBoxGeometry(.18,.7,.28,2,.05),dark,s*1.5,3.35,4.45);});
+  const amber=new THREE.MeshBasicMaterial({color:hdr(0xffb020,8)});for(let i=-2;i<=2;i++)add(new THREE.BoxGeometry(.14,.07,.07),amber,i*.42,4.72,3.5);
+  add(new THREE.BoxGeometry(2.3,.35,6.2),dark,0,.92,1.4);
+  [-1,1].forEach(s=>{add(new THREE.CylinderGeometry(.33,.33,1.2,20).rotateZ(Math.PI/2).rotateY(Math.PI/2),chrome,s*1.05,.95,1.45);});
+  // trailer
+  const side=livery.side,rear=livery.rear;
+  const tm=new THREE.MeshPhysicalMaterial({map:side,roughness:.45,metalness:.25,clearcoat:.6});
+  const trailer=new THREE.Mesh(new THREE.BoxGeometry(2.55,2.8,13.6),[tm,tm,new THREE.MeshStandardMaterial({color:0x1e2250,roughness:.6}),dark,new THREE.MeshStandardMaterial({color:0x22285e,roughness:.5}),new THREE.MeshStandardMaterial({map:rear,roughness:.5,metalness:.2})]);
+  trailer.position.set(0,2.65,-5.05);body.add(trailer);
+  add(new THREE.BoxGeometry(2.2,.3,13),dark,0,1.15,-5.2);
+  add(new THREE.BoxGeometry(2.4,.12,.12),chrome,0,.55,-11.8);
+  const tail=new THREE.MeshBasicMaterial({color:hdr(0xff1414,10)});
+  [-1,1].forEach(s=>{add(new THREE.BoxGeometry(.5,.16,.05),tail,s*.95,1.1,-11.88);for(let z=-11;z<1;z+=2.2)add(new THREE.BoxGeometry(.05,.07,.12),amber,s*1.29,1.18,z);
+    [-.2,.2].forEach(dz=>add(new THREE.BoxGeometry(.06,.9,.06),dark,s*.9,.75,-1+dz));});
+  // wheels
+  const wheels=[];const tire=new THREE.MeshStandardMaterial({color:0x0b0b0d,roughness:.92});
+  const tireG=new THREE.CylinderGeometry(.52,.52,.34,28).rotateZ(Math.PI/2),rimG=new THREE.CylinderGeometry(.3,.3,.36,18).rotateZ(Math.PI/2);
+  const spokeTex=canvasTex(64,64,(c)=>{c.fillStyle='#bfc3cc';c.fillRect(0,0,64,64);c.fillStyle='#2a2c33';for(let a=0;a<10;a++){c.save();c.translate(32,32);c.rotate(a*.628);c.fillRect(-2,8,4,18);c.restore();}});
+  const rimM=new THREE.MeshStandardMaterial({color:0xc8ccd4,metalness:.9,roughness:.25,map:spokeTex});
+  const axle=(z,dual)=>{[-1,1].forEach(s=>{const w=new THREE.Group();w.position.set(s*(dual?1.0:1.05),.52,z);w.add(new THREE.Mesh(tireG,tire));const r=new THREE.Mesh(rimG,rimM);w.add(r);g.add(w);wheels.push(w);});};
+  axle(3.75,false);axle(.35,true);axle(-8.4,true);axle(-9.75,true);axle(-11.1,true);
+  [-1,1].forEach(s=>{add(new THREE.BoxGeometry(.4,.08,1.3),dark,s*1.08,1.1,3.75);});
+  // lights
+  const spots=[];[-1,1].forEach(s=>{const sp=new THREE.SpotLight(0xf4f2ff,2.5e4,180,.42,.55,2);sp.position.set(s*.95,1.45,4.8);sp.target.position.set(s*.6,0,40);g.add(sp,sp.target);spots.push(sp);});
+  const coneMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,uniforms:{c:{value:hdr(0xf2f0ff,.12)}},
+    vertexShader:`varying float vY;void main(){vY=uv.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+    fragmentShader:`uniform vec3 c;varying float vY;void main(){gl_FragColor=vec4(c*pow(vY,2.2)*.35,1.);}`});
+  [-1,1].forEach(s=>{const cn=new THREE.Mesh(new THREE.ConeGeometry(4.5,30,24,1,true),coneMat);cn.rotation.x=-Math.PI/2+.06;cn.position.set(s*.95,1.1,4.8+15);g.add(cn);});
+  [-1,1].forEach(s=>{const gl=glowSprite(0xf4f7ff,1.1,3);gl.position.set(s*.95,1.42,4.75);g.add(gl);});
+  return {group:g,body,wheels,spots};
+}
+
+/* ============ SEA ============ */
+class SeaStage extends Stage{
+  constructor(tex){
+    super(36,1,30000);const s=this.scene;
+    this.sky=new Sky();this.sky.scale.setScalar(20000);s.add(this.sky);
+    const u=this.sky.material.uniforms;u.turbidity.value=7;u.rayleigh.value=2.4;u.mieCoefficient.value=.006;u.mieDirectionalG.value=.86;
+    this.sunV=new V3().setFromSphericalCoords(1,THREE.MathUtils.degToRad(89),THREE.MathUtils.degToRad(196));u.sunPosition.value.copy(this.sunV);
+    this.water=new Water(new THREE.PlaneGeometry(30000,30000),{textureWidth:mobile?256:512,textureHeight:mobile?256:512,waterNormals:tex.water,sunDirection:this.sunV.clone(),sunColor:0xffd7a0,waterColor:0x061232,distortionScale:3.2,fog:false});
+    this.water.rotation.x=-Math.PI/2;s.add(this.water);
+    const pm=new THREE.PMREMGenerator(renderer);const es=new THREE.Scene();const sk2=new Sky();sk2.scale.setScalar(1000);Object.keys(u).forEach(k=>{sk2.material.uniforms[k].value=u[k].value;});es.add(sk2);
+    s.environment=pm.fromScene(es).texture;pm.dispose();s.environmentIntensity=.9;
+    const sun=new THREE.DirectionalLight(0xffc89a,2.2);sun.position.copy(this.sunV).multiplyScalar(100);s.add(sun);
+    s.add(new THREE.HemisphereLight(0x5068b8,0x0a1020,.6));
+    this.ship=null;this.shipX=0;
+    const foam=canvasTex(256,1024,(g,w,h)=>{g.fillStyle='#000';g.fillRect(0,0,w,h);for(let i=0;i<5000;i++){const y=rnd()*h,spread=(y/h);const x=w/2+(rnd()-.5)*w*(.15+spread*.85)*(rnd()<.5?1:.6);g.fillStyle=`rgba(255,255,255,${(1-y/h)*rnd()*.35})`;g.fillRect(x,y,1+rnd()*3,4+rnd()*20);}},{srgb:false,repeat:true});
+    this.foamTex=foam;
+    this.wake=new THREE.Mesh(new THREE.PlaneGeometry(90,700),new THREE.MeshBasicMaterial({map:foam,color:hdr(0xdfe8ff,.9),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));this.wake.rotation.x=-Math.PI/2;this.wake.rotation.z=Math.PI/2;this.wake.position.y=.15;s.add(this.wake);
+    this.bow=new THREE.Mesh(new THREE.PlaneGeometry(36,60),new THREE.MeshBasicMaterial({map:foam,color:hdr(0xffffff,.8),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));this.bow.rotation.x=-Math.PI/2;this.bow.rotation.z=Math.PI/2;this.bow.position.y=.2;s.add(this.bow);
+    this.ray=new THREE.Raycaster();this.hover=false;
+  }
+  setShip(root,info,container){
+    this.ship=root;this.info=info;this.scene.add(root);this.container=container;
+  }
+  update(t,time,dt,ctx){
+    this.water.material.uniforms.time.value=time*.6;
+    const x=t*180+time*3.5;this.shipX=x;
+    this.water.position.x=x;
+    const sc=x+(this.info?this.info.cx:37);
+    if(this.ship){this.ship.position.set(x,this.info.y+Math.sin(time*.6)*.35,0);this.ship.rotation.set(Math.sin(time*.45)*.008,0,Math.sin(time*.33)*.004);
+      this.container.edge.material.color.copy(hdr(0xfcc917,lerp(2.5,6,(Math.sin(time*3)+1)/2)*(this.hover?1.6:1)));}
+    this.wake.position.set(x+(this.info?this.info.stern:-100)-350,.15,0);this.foamTex.offset.y=-time*.05;
+    this.bow.position.set(x+(this.info?this.info.bow:174)+4,.2,0);
+    const cp=new V3();if(this.container)this.container.mesh.getWorldPosition(cp);else cp.set(sc+80,40,0);
+    keyCam([
+      {t:0,pos:()=>new V3(sc+160,32,290),look:()=>new V3(sc+20,12,0)},
+      {t:1,pos:()=>new V3(sc+40,40,320),look:()=>new V3(sc+20,12,0)}],t,this.camera);
+    parallax(this.camera,.5);
+    this.shiftX=mobile?0:-.14;this.shiftY=mobile?.16:0;this.frame();this.exposure=.62;
+  }
+  pick(nx,ny){
+    if(!this.container)return false;this.ray.setFromCamera({x:nx,y:-ny},this.camera);
+    return this.ray.intersectObject(this.container.mesh,false).length>0;
+  }
+}
+
+/* ============ PLATFORM ============ */
+class PlatformStage extends Stage{
+  constructor(labels){
+    super(36,.1,400);const s=this.scene;s.background=new C(0x05071a);s.fog=new THREE.FogExp2(0x05071a,.035);
+    const pm=new THREE.PMREMGenerator(renderer);s.environment=pm.fromScene(new RoomEnvironment(),.04).texture;pm.dispose();s.environmentIntensity=.45;
+    s.add(new THREE.HemisphereLight(0x5a66c0,0x05060f,.5));
+    const kl=new THREE.DirectionalLight(0xbfc8ff,1.2);kl.position.set(-5,9,6);s.add(kl);
+    this.pl=new THREE.PointLight(0xfcc917,40,30,1.6);this.pl.position.set(0,-.5,0);s.add(this.pl);
+    const floor=new THREE.Mesh(new THREE.CircleGeometry(60,96),new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},
+      vertexShader:`varying vec3 vW;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,
+      fragmentShader:`uniform float time;varying vec3 vW;void main(){vec2 p=vW.xz;vec2 g=abs(fract(p)-.5);float l=1.-smoothstep(0.,.025,min(g.x,g.y));float r=length(p);
+        float f=exp(-r*.09);vec3 c=vec3(.18,.22,.55)*l*f*.8+vec3(1.,.75,.1)*exp(-r*.5)*.25;float ring=smoothstep(.06,0.,abs(r-mod(time*2.,30.)))*exp(-r*.07);c+=vec3(1.,.8,.2)*ring*.6;gl_FragColor=vec4(c,1.);}`}));
+    floor.rotation.x=-Math.PI/2;floor.position.y=-1;s.add(floor);this.floor=floor;
+    this.layers=[];
+    const slabG=new RoundedBoxGeometry(6,.26,3.8,4,.12);
+    for(let i=0;i<5;i++){
+      const y=i*1.3;const grp=new THREE.Group();grp.position.y=y;
+      const glass=new THREE.Mesh(slabG,new THREE.MeshPhysicalMaterial({color:0xd8deff,transmission:1,thickness:.5,roughness:.16,ior:1.45,metalness:0,clearcoat:1,clearcoatRoughness:.1,attenuationColor:new C(0x6f7ad8),attenuationDistance:2.5,envMapIntensity:1.3,transparent:true}));
+      grp.add(glass);
+      const eg=new THREE.EdgesGeometry(new THREE.BoxGeometry(6.04,.3,3.84));const edge=new THREE.LineSegments(eg,new THREE.LineBasicMaterial({color:hdr(0xfcc917,.4),transparent:true}));grp.add(edge);
+      const lab=new THREE.Mesh(new THREE.PlaneGeometry(5.4,2.7),new THREE.MeshBasicMaterial({map:labels[i],transparent:true,depthWrite:false,color:hdr(0xffffff,1)}));lab.rotation.x=-Math.PI/2;lab.position.y=.14;grp.add(lab);
+      s.add(grp);this.layers.push({grp,glass,edge,lab,y});
+    }
+    // streams + packets
+    this.streams=[[-2.5,-1.4],[2.5,1.4],[2.5,-1.4],[-2.5,1.4]];
+    const sm=new THREE.MeshBasicMaterial({color:hdr(0xfcc917,1.4),transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
+    this.streams.forEach(([x,z])=>{const c=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,6.4,6),sm);c.position.set(x,2.4,z);s.add(c);});
+    this.PN=72;this.packets=new THREE.InstancedMesh(new THREE.BoxGeometry(.09,.09,.09),new THREE.MeshBasicMaterial({color:hdr(0xffd24a,6)}),this.PN);s.add(this.packets);this.packets.frustumCulled=false;
+    // morph particles
+    const N=mobile?4000:9000;const a=new Float32Array(N*3),b=new Float32Array(N*3),d=new Float32Array(N);
+    for(let i=0;i<N;i++){const f=rnd()*6|0;let x=(rnd()-.5)*6.2,y=(rnd()-.5)*1.3,z=(rnd()-.5)*1.3;if(f<2)y=f?.65:-.65;else if(f<4)z=f===2?.65:-.65;else x=f===4?3.1:-3.1;
+      a.set([x,y+2.6,z],i*3);const L=rnd()*5|0;b.set([(rnd()-.5)*5.8,L*1.3+.14,(rnd()-.5)*3.6],i*3);d[i]=rnd();}
+    const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(a,3));pg.setAttribute('target',new THREE.BufferAttribute(b,3));pg.setAttribute('del',new THREE.BufferAttribute(d,1));
+    this.pmat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{p:{value:0},time:{value:0},op:{value:1},px:{value:renderer.getPixelRatio()}},
+      vertexShader:`attribute vec3 target;attribute float del;uniform float p,time,px;varying float vA;
+        void main(){float k=clamp((p-del*.45)/.55,0.,1.);k=k*k*(3.-2.*k);vec3 pos=mix(position,target,k);
+        float sw=sin(k*3.1416);pos+=vec3(sin(del*40.+time),cos(del*31.+time*1.3),sin(del*17.-time))*sw*.8;
+        vec4 mv=modelViewMatrix*vec4(pos,1.);gl_PointSize=(1.6+sw*2.4)*px*(10./-mv.z);vA=.6+sw*.4;gl_Position=projectionMatrix*mv;}`,
+      fragmentShader:`uniform float op;varying float vA;void main(){vec2 c=gl_PointCoord-.5;float d=length(c);if(d>.5)discard;gl_FragColor=vec4(vec3(1.,.8,.25)*2.*vA*op*(1.-d*2.),1.);}`});
+    this.points=new THREE.Points(pg,this.pmat);this.points.frustumCulled=false;s.add(this.points);
+    this.activeCount=0;
+  }
+  update(t,time,dt,ctx){
+    const calm=ctx.kind==='calm';const tt=calm?1:t;
+    this.floor.material.uniforms.time.value=time;this.pmat.uniforms.time.value=time;
+    this.pmat.uniforms.p.value=1;this.pmat.uniforms.op.value=.15;
+    const appear=1;
+    let active=0;
+    this.layers.forEach((L,i)=>{const on=tt>.08+i*.15;if(on)active=i+1;const k=ss(.08+i*.15,.16+i*.15,tt);
+      L.glass.material.opacity=appear;L.glass.visible=appear>.01;L.grp.scale.setScalar(lerp(.86,1,appear));
+      L.edge.material.color.copy(hdr(0xfcc917,lerp(.25,4.5,k)+Math.sin(time*2+i)*.3*k));L.edge.material.opacity=appear;
+      L.lab.material.opacity=appear*lerp(.35,1,k);L.grp.position.y=L.y+Math.sin(time*.8+i*.7)*.04;});
+    this.activeCount=active;
+    const m=new THREE.Matrix4();
+    for(let i=0;i<this.PN;i++){const st=this.streams[i%4];const y=((time*.9+i*.37)%6)-.4;m.makeTranslation(st[0],y,st[1]);this.packets.setMatrixAt(i,m);}
+    this.packets.instanceMatrix.needsUpdate=true;this.packets.visible=appear>.3;
+    this.pl.intensity=40*appear;
+    const ang=.45+tt*.35+time*.01;const rad=13.5;const hy=lerp(5.2,6.4,tt);
+    this.camera.position.set(Math.sin(ang)*rad,hy,Math.cos(ang)*rad);this.camera.lookAt(0,lerp(2.6,2.8,tt),0);parallax(this.camera,.8);
+    this.shiftX=mobile?0:(calm?-.2:.17);this.shiftY=mobile?.16:0;this.frame();this.exposure=calm?.28:1;
+  }
+}
+
+/* ============ PIPELINE ============ */
+class StagePass extends Pass{
+  constructor(){super();this.a=null;this.b=null;this.mix=0;
+    const mk=()=>new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:mobile?0:4});this.rtA=mk();this.rtB=mk();
+    this.quad=new FullScreenQuad(new THREE.ShaderMaterial({uniforms:{tA:{value:null},tB:{value:null},uMix:{value:0},uAspect:{value:1},uTime:{value:0},uExpA:{value:1},uExpB:{value:1}},
+      vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`,
+      fragmentShader:`uniform sampler2D tA,tB;uniform float uMix,uAspect,uTime,uExpA,uExpB;varying vec2 vUv;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+        void main(){vec2 uv=vUv;
+          if(uMix<=.0001){gl_FragColor=vec4(texture2D(tA,uv).rgb*uExpA,1.);return;}
+          if(uMix>=.9999){gl_FragColor=vec4(texture2D(tB,uv).rgb*uExpB,1.);return;}
+          vec3 A=texture2D(tA,uv).rgb*uExpA,B=texture2D(tB,uv).rgb*uExpB;
+          vec3 col=mix(A,B,smoothstep(0.,1.,uMix));
+          gl_FragColor=vec4(col,1.);}`}));
+  }
+  setSize(w,h){this.rtA.setSize(w,h);this.rtB.setSize(w,h);this.quad.material.uniforms.uAspect.value=w/h;}
+  render(r,wb){
+    const u=this.quad.material.uniforms;
+    const two=this.b&&this.mix>0&&this.mix<1;
+    if(!two||this.mix<1){r.setRenderTarget(this.rtA);r.clear();r.render(this.a.scene,this.a.camera);}
+    if(two){r.setRenderTarget(this.rtB);r.clear();r.render(this.b.scene,this.b.camera);}
+    u.tA.value=this.rtA.texture;u.tB.value=two?this.rtB.texture:this.rtA.texture;u.uMix.value=two?this.mix:0;u.uExpA.value=this.a.exposure;u.uExpB.value=two?this.b.exposure:1;u.uTime.value=performance.now()/1000;
+    r.setRenderTarget(this.renderToScreen?null:wb);this.quad.render(r);
+  }
+}
+const FinishShader={uniforms:{tDiffuse:{value:null},time:{value:0},aspect:{value:1}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform sampler2D tDiffuse;uniform float time,aspect;varying vec2 vUv;float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+    void main(){vec3 c=texture2D(tDiffuse,vUv).rgb;vec2 q=(vUv-.5)*vec2(aspect,1.);float v=smoothstep(1.15,.25,length(q));c*=mix(.62,1.,v);
+      c+=(h(vUv*vec2(1733.,977.)+fract(time*7.))-.5)*.012;gl_FragColor=vec4(c,1.);}`};
+
+/* ============ BOOT ============ */
+async function loadGLB(url,onP){
+  const r=await fetch(url);if(!r.ok)throw new Error(url+' '+r.status);
+  const txt=await r.text();if(onP)onP();
+  const bin=atob(txt.trim());const buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);
+  return new Promise((res,rej)=>new GLTFLoader().parse(buf.buffer,'',res,rej));
+}
+let stages={},stagePass,composer,bloom,finish,ready=false;
+async function boot(){
+  if(!renderer){document.getElementById('loader').classList.add('done');document.documentElement.classList.add('ready');return;}
+  renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.3:1.6));renderer.setSize(innerWidth,innerHeight,false);
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
+  try{await Promise.race([document.fonts.load('400 40px "Archivo Black","Arial Black",sans-serif'),new Promise(r=>setTimeout(r,2500))]);await document.fonts.ready;}catch(e){}
+  const mgr=new THREE.LoadingManager();let prog=0;
+  const setP=v=>{prog=Math.max(prog,v);loaderBar.style.width=(prog*100)+'%';loaderN.textContent='LOADING '+Math.round(prog*100)+'%';};
+  mgr.onProgress=(u,l,t)=>setP(l/t*.85);
+  const tl=new THREE.TextureLoader(mgr);
+  const tload=(u,srgb=true)=>new Promise(res=>tl.load(u,t=>{if(srgb)t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;res(t)},undefined,()=>res(new THREE.Texture())));
+  const gl=new GLTFLoader(mgr);
+  const [day,night,spec,clouds,water,logo,planeG]=await Promise.all([tload('earth-day.jpg'),tload('earth-night.jpg'),tload('earth-spec.jpg',false),tload('earth-clouds.jpg',false),tload('waternormals.jpg',false),imgLoad('logo-white.png').catch(()=>null),
+    loadGLB('plane.glb.txt',()=>setP(.8)).catch(e=>{console.warn('plane',e);return null;})]);
+  water.wrapS=water.wrapT=THREE.RepeatWrapping;
+
+  const livery=makeLivery(logo);
+  const labels=makeLabels();
+  stages.globe=new GlobeStage({day,night,spec,clouds});
+  stages.air=new AirStage();
+  stages.road=new RoadStage(livery);
+  stages.sea=new SeaStage({water});
+  stages.platform=new PlatformStage(labels);
+  if(planeG)setupPlane(planeG);
+
+  composer=new EffectComposer(renderer);
+  stagePass=new StagePass();composer.addPass(stagePass);
+  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.32,.35,1.0);composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+  finish=new ShaderPass(FinishShader);composer.addPass(finish);
+  composer.setPixelRatio(renderer.getPixelRatio());composer.setSize(innerWidth,innerHeight);
+
+  // warm up shaders for every stage
+  Object.values(stages).forEach(s=>{s.update(.5,0,0,{kind:'chapter'});renderer.compile(s.scene,s.camera);});
+  setP(1);
+  setTimeout(()=>{document.getElementById('loader').classList.add('done');document.documentElement.classList.add('ready');
+    stages.globe.intro=1;},250);
+  ready=true;
+  // ship in the background
+  loadGLB('ship.glb.txt').then(g=>setupShip(g,livery)).catch(e=>console.warn('ship',e));
+  renderer.setAnimationLoop(loop);
+}
+
+function makeLivery(logo){
+  const side=canvasTex(2048,420,(g,w,h)=>{
+    const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#2d3372');gr.addColorStop(1,'#1a1e4c');g.fillStyle=gr;g.fillRect(0,0,w,h);
+    g.strokeStyle='rgba(255,255,255,.05)';g.lineWidth=2;for(let x=0;x<w;x+=w/26){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}
+    g.fillStyle='#fcc917';g.beginPath();g.moveTo(w*.42,h);g.bezierCurveTo(w*.62,h*.62,w*.82,h*.42,w,h*.2);g.lineTo(w,h*.34);g.bezierCurveTo(w*.84,h*.52,w*.66,h*.76,w*.5,h);g.closePath();g.fill();
+    g.fillStyle='rgba(252,201,23,.35)';g.beginPath();g.moveTo(w*.52,h);g.bezierCurveTo(w*.7,h*.75,w*.86,h*.58,w,h*.42);g.lineTo(w,h*.46);g.bezierCurveTo(w*.87,h*.62,w*.72,h*.8,w*.56,h);g.closePath();g.fill();
+    if(logo){const lh=h*.62;g.drawImage(logo,w*.035,h*.14,lh*logo.width/logo.height,lh);}
+    g.fillStyle='#fcc917';g.font='400 30px "Archivo Black","Arial Black",sans-serif';g.letterSpacing='6px';g.fillText('E-COMMERCE CUSTOMS CLEARANCE',w*.036,h*.9);
+  },{aniso:16});
+  const rear=canvasTex(512,560,(g,w,h)=>{g.fillStyle='#22285e';g.fillRect(0,0,w,h);g.strokeStyle='rgba(0,0,0,.45)';g.lineWidth=6;g.beginPath();g.moveTo(w/2,0);g.lineTo(w/2,h);g.stroke();
+    g.fillStyle='#9aa0aa';for(let i=0;i<4;i++){g.fillRect(w*.22,h*.08+i*h*.27,8,h*.12);g.fillRect(w*.76,h*.08+i*h*.27,8,h*.12);}
+    g.fillStyle='#ff3b30';g.fillRect(0,h-26,w*.5,10);g.fillStyle='#ffffff';g.fillRect(w*.5,h-26,w*.5,10);
+    if(logo){const lw=w*.6;g.drawImage(logo,w*.2,h*.36,lw,lw*logo.height/logo.width);}});
+  const cont=canvasTex(1024,256,(g,w,h)=>{g.fillStyle='#262c68';g.fillRect(0,0,w,h);for(let x=0;x<w;x+=16){g.fillStyle='rgba(255,255,255,.07)';g.fillRect(x,0,6,h);g.fillStyle='rgba(0,0,0,.18)';g.fillRect(x+8,0,4,h);}
+    g.fillStyle='#fcc917';g.fillRect(0,h-24,w,10);if(logo){const lh=h*.58;g.drawImage(logo,w*.94-lh*logo.width/logo.height,h*.16,lh*logo.width/logo.height,lh);}
+    g.fillStyle='#eceef8';g.font='500 22px "JetBrains Mono",monospace';g.fillText('EDRU 402118 6  45G1',w*.05,h*.24);});
+  return {side,rear,cont,logo};
+}
+function makeLabels(){
+  const L=[['01','ly.1','API · EDI · MANIFESTS'],['02','ly.2','HS · VALIDATION · RISK'],['03','ly.3','FILINGS · MESSAGES'],['04','ly.4','DOUANE · H7'],['05','ly.5','PORTAL · MOBILE']];
+  return L.map(([n,k,sub])=>canvasTex(1024,512,(g,w,h)=>{
+    g.strokeStyle='rgba(252,201,23,.55)';g.lineWidth=3;g.strokeRect(14,14,w-28,h-28);
+    g.fillStyle='rgba(252,201,23,.9)';[[14,14],[w-14,14],[14,h-14],[w-14,h-14]].forEach(([x,y])=>{g.fillRect(x-10,y-2,20,4);g.fillRect(x-2,y-10,4,20);});
+    g.fillStyle='rgba(255,255,255,.08)';for(let x=40;x<w-30;x+=26)for(let y=40;y<h-30;y+=26)g.fillRect(x,y,2,2);
+    g.fillStyle='#fcc917';g.font='500 46px "JetBrains Mono",monospace';g.fillText(n,60,120);
+    g.fillStyle='#ffffff';g.font='400 78px "Archivo Black","Arial Black",sans-serif';g.fillText(t(k).toUpperCase(),60,250);
+    g.fillStyle='rgba(236,238,248,.7)';g.font='500 34px "JetBrains Mono",monospace';g.fillText(sub,62,330);
+  },{aniso:16}));
+}
+
+function setupPlane(gltf){
+  const model=gltf.scene;const root=new THREE.Group();root.add(model);
+  model.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(model),sz=box.getSize(new V3()),ce=box.getCenter(new V3());
+  model.position.set(-ce.x,-box.min.y,-ce.z);model.updateMatrixWorld(true);
+  const gear=[];model.traverse(o=>{
+    if(/^(gear_1|geaqr_2|gear_3|front_gear)/.test(o.name))gear.push(o);
+    if(o.isMesh){o.material=o.material.clone();o.material.roughness=.3;o.material.metalness=.25;o.material.envMapIntensity=1.3;}
+  });
+  // livery decals: star on tail + wordmark on fuselage
+  try{
+    const ray=new THREE.Raycaster();const meshes=[];model.traverse(o=>{if(o.isMesh)meshes.push(o)});
+    const starTex=new THREE.TextureLoader().load('star.png');starTex.colorSpace=THREE.SRGBColorSpace;
+    const navyTex=new THREE.TextureLoader().load('logo-navy.png');navyTex.colorSpace=THREE.SRGBColorSpace;
+    const decal=(tex,y,z,w,h)=>{[-1,1].forEach(s=>{ray.set(new V3(s*sz.x,y,z),new V3(-s,0,0));const hit=ray.intersectObjects(meshes,false)[0];if(!hit)return;
+      const dg=new DecalGeometry(hit.object,hit.point,new THREE.Euler(0,s*Math.PI/2,0),new V3(w,h,sz.x*.07));
+      const dm=new THREE.Mesh(dg,new THREE.MeshStandardMaterial({map:tex,transparent:true,polygonOffset:true,polygonOffsetFactor:-4,roughness:.35,metalness:.1,depthWrite:false}));root.add(dm);});};
+    decal(starTex,sz.y*.8,-sz.z*.43,sz.y*.36,sz.y*.34);
+    decal(navyTex,sz.y*.44,sz.z*.12,sz.z*.13,sz.z*.068);
+  }catch(e){console.warn('decal',e);}
+  const S=44/sz.z;root.scale.setScalar(S);
+  const info={scale:S,gear,tip:new V3(sz.x*.49,sz.y*.32,-sz.z*.1),top:sz.y*.6,midZ:0,root:new V3(sz.x*.12,sz.y*.2,sz.z*.08)};
+  stages.air.setPlane(root,info);
+}
+function setupShip(gltf,livery){
+  const model=gltf.scene;const S=3;const root=new THREE.Group();root.add(model);
+  model.traverse(o=>{if(o.isMesh){o.material.envMapIntensity=1;if(o.material.emissiveMap)o.material.emissiveIntensity=4;}});
+  root.scale.setScalar(S);root.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(root);
+  const ray=new THREE.Raycaster();const cx=box.min.x+(box.max.x-box.min.x)*.8;
+  ray.set(new V3(cx,500,0),new V3(0,-1,0));const hit=ray.intersectObject(root,true)[0];const topY=hit?hit.point.y:box.max.y*.85;
+  const cg=new THREE.BoxGeometry(12.2,2.9,2.44);
+  const sideM=new THREE.MeshStandardMaterial({map:livery.cont,roughness:.45,metalness:.35});
+  const plain=new THREE.MeshStandardMaterial({color:0x262c68,roughness:.5,metalness:.35});
+  const cm=new THREE.Mesh(cg,[plain,plain,plain,plain,sideM,sideM]);
+  // rotate so long side along x: geometry is along x already, faces +z/-z carry livery
+  cm.position.set(cx,topY+1.45,0);
+  const edge=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(12.4,3.1,2.64)),new THREE.LineBasicMaterial({color:hdr(0xfcc917,4)}));cm.add(edge);
+  const holder=new THREE.Group();holder.add(cm);
+  const shipRoot=new THREE.Group();model.parent.remove(model);
+  const inner=new THREE.Group();inner.scale.setScalar(S);inner.add(model);shipRoot.add(inner);shipRoot.add(holder);
+  const info={y:-8,cx:(box.min.x+box.max.x)/2,stern:box.min.x,bow:box.max.x};
+  stages.sea.setShip(shipRoot,info,{mesh:cm,edge});
+  [[box.max.x-6,box.max.y*.9,0,0xffffff],[box.min.x+80,box.max.y*.95,6.5,0x20ff60],[box.min.x+80,box.max.y*.95,-6.5,0xff2020]].forEach(([x,y,z,c])=>{const g=glowSprite(c,6,7);g.position.set(x,y,z);shipRoot.add(g);});
+}
+
+/* ============ LOOP ============ */
+const rail=[...document.querySelectorAll('.rail button')],railFill=document.getElementById('railfill');
+const layerEls=[...document.querySelectorAll('#layers li')];
+const ptrack=document.getElementById('ptrack'),pfill=document.getElementById('pfill'),psteps=[...document.querySelectorAll('.pstep')];
+const tip3d=document.getElementById('tip3d');
+const order=['air','road','sea','platform'];
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;const time=now/1000;
+  mouse.sx=lerp(mouse.sx,mouse.nx,.05);mouse.sy=lerp(mouse.sy,mouse.ny,.05);
+  mouse.rx=lerp(mouse.rx,mouse.x,.18);mouse.ry=lerp(mouse.ry,mouse.y,.18);
+  const st=scrollState();
+  const cur3=stages[st.stage];cur3.update(st.t,time,dt,{kind:st.kind});
+  if(st.prev){const p=stages[st.prev.stage];p.update(1,time,dt,{kind:st.prev.kind});stagePass.a=p;stagePass.b=cur3;stagePass.mix=st.mix;}
+  else{stagePass.a=cur3;stagePass.b=null;stagePass.mix=0;}
+  finish.uniforms.time.value=time;finish.uniforms.aspect.value=innerWidth/innerHeight;
+  composer.render(dt);
+  // DOM sync
+  const ci=order.indexOf(st.sec.ch);
+  document.querySelector('.rail').classList.toggle('on',ci>=0);rail.forEach((b,i)=>{b.classList.toggle('now',i===ci);b.classList.toggle('done',ci>i||(ci<0&&st.k>4));});
+  const railP=ci>=0?(ci+st.t)/4:(st.k>4?1:0);railFill.style.height=(railP*100)+'%';
+  const act=st.stage==='platform'?stages.platform.activeCount:0;layerEls.forEach((l,i)=>l.classList.toggle('on',st.kind==='calm'||i<act));
+  // hover container
+  let hov=false;if(st.stage==='sea'&&!st.prev&&!mobile&&mouse.moved){hov=stages.sea.pick(mouse.nx,mouse.ny);}
+  stages.sea.hover=hov;
+  if(hov){tip3d.innerHTML=`<b>EDRU 402118-6</b> · 40' HC<br>${t('tt.status')}: <span style="color:#8ee6a8">${t('st.released')}</span> · 1,284 ${t('tt.parcels')}`;tip3d.style.left=mouse.x+'px';tip3d.style.top=mouse.y+'px';}
+  tip3d.classList.toggle('on',hov);
+}
+addEventListener('resize',()=>{mobile=matchMedia('(max-width: 820px)').matches;if(!renderer)return;renderer.setSize(innerWidth,innerHeight,false);if(composer){composer.setSize(innerWidth,innerHeight);}measure();});
+boot().catch(e=>{console.error(e);document.getElementById('loader').classList.add('done');document.documentElement.classList.add('ready','no-gl');});
+</script>
+
+</body></html>
